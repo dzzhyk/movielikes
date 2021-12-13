@@ -1,0 +1,91 @@
+package com.yankaizhang.movielikes.offline
+
+import com.yankaizhang.movielikes.entity.MongoRatingEntity
+import org.apache.spark.SparkConf
+import org.apache.spark.rdd.RDD
+import org.apache.spark.sql.{DataFrame, SparkSession}
+
+import scala.collection.mutable.ArrayBuffer
+
+/**
+ * 基于物品的离线协同过滤
+ */
+object ItemCFRecommend {
+
+  val MONGO_URL = "mongodb://127.0.0.1:27017/movie-recommend"
+  val MONGO_COLLECTION = "ratings"
+
+  def main(args: Array[String]): Unit = {
+
+    // 初始化spark环境
+    val sparkConf: SparkConf = new SparkConf().setMaster("local[*]").setAppName("ItemCFRecommend")
+      .set("spark.network.timeout", "10000000")
+
+    val sparkSession = SparkSession.builder()
+      .config(sparkConf)
+      .config("spark.mongodb.output.uri", "mongodb://127.0.0.1:27017/spark-output")
+      .getOrCreate()
+
+    // 加载最新rating数据
+    import sparkSession.implicits._
+
+    val userItemArray: RDD[(Int, Seq[(Int, Double)])] = sparkSession.read
+      .format("mongo")
+      .option("uri", MONGO_URL)
+      .option("collection", MONGO_COLLECTION)
+      .load()
+      .as[MongoRatingEntity]
+      .rdd
+      .mapPartitions(part => {
+        part.map(rating => (rating.userId, rating.movieId, rating.rating))
+      })
+      .groupBy(doc => doc._1)
+      .mapPartitions(part => {
+        part.map(item => (item._1, item._2.map(tup => (tup._2, tup._3)).toSeq))
+      })
+
+    val S0 = ArrayBuffer[((Int, Int), Double)]()
+
+    val array = userItemArray.collect()
+
+    println("0")
+
+    for (elem <- array) {
+      val itemSeq: Seq[(Int, Double)] = elem._2
+      val value: RDD[(Int, Double)] = sparkSession.sparkContext.parallelize(itemSeq)
+      S0.appendAll(value.cartesian(value).map(result => {
+        ((result._1._1, result._2._1), result._1._2 * result._2._2)
+      }).collect())
+    }
+
+    val beforeDistinct: RDD[((Int, Int), Double)] = sparkSession.sparkContext.parallelize(S0)
+
+    println("1")
+
+    // 求笛卡尔积后求和
+    val S1: RDD[((Int, Int), Double)] = beforeDistinct.groupByKey().map(tup => (tup._1, tup._2.sum)).cache()
+
+    println("2")
+
+    val S2 = S1.filter(r => {
+      val key = r._1
+      if (key._1 == key._2) true
+      else false
+    }).map({ r => (r._1._1, r._2) }).cache()
+
+    println("3")
+
+    // 相似度矩阵
+    val simMatrixRDD: DataFrame = S1.filter {
+      case (a, _) => a._1 != a._2
+    }.map(r => {
+      val k1 = S2.filter { case (i, _) => i == r._1._1 }.first()._2
+      val k2 = S2.filter { case (i, _) => i == r._1._2 }.first()._2
+      val k = r._2 / Math.sqrt(k1 * k2)
+      ((r._1._1, r._1._2), k)
+    })
+      .toDF()
+
+    println("4")
+  }
+}
