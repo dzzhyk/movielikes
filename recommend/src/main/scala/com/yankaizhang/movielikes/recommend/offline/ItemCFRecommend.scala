@@ -1,7 +1,6 @@
-package com.yankaizhang.movielikes.offline
+package com.yankaizhang.movielikes.recommend.offline
 
-import com.yankaizhang.movielikes.entity.MongoRatingEntity
-import org.apache.spark.SparkConf
+import com.yankaizhang.movielikes.recommend.entity.MongoRatingEntity
 import org.apache.spark.rdd.RDD
 import org.apache.spark.sql.{DataFrame, SparkSession}
 
@@ -12,18 +11,16 @@ import scala.collection.mutable.ArrayBuffer
  */
 object ItemCFRecommend {
 
-  val MONGO_URL = "mongodb://127.0.0.1:27017/movie-recommend"
+  val MONGO_URL = "mongodb://10.237.53.6:27017/movie-recommend"
   val MONGO_COLLECTION = "ratings"
 
   def main(args: Array[String]): Unit = {
 
     // 初始化spark环境
-    val sparkConf: SparkConf = new SparkConf().setMaster("local[*]").setAppName("ItemCFRecommend")
-      .set("spark.network.timeout", "10000000")
-
     val sparkSession = SparkSession.builder()
-      .config(sparkConf)
-      .config("spark.mongodb.output.uri", "mongodb://127.0.0.1:27017/spark-output")
+      .appName("ItemCFRecommend")
+      .config("spark.network.timeout", "10000000")
+//      .config("spark.mongodb.output.uri", "mongodb://10.237.53.6:27017/spark-output")
       .getOrCreate()
 
     // 加载最新rating数据
@@ -93,6 +90,9 @@ object ItemCFRecommend {
         ((r._1._1, r._1._2), k)
       })
     }).toDF()
+
+    _S2.destroy()
+    S1.unpersist(true)
 
   }
 }

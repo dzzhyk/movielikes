@@ -3,7 +3,7 @@
 
 	<include resource="org/springframework/boot/logging/logback/defaults.xml" />
 
-	<property name="log.path" value="/Users/dzzhyk/Desktop/各种课程作业/专业综合设计/代码实现/movielikes/logs" />
+	<property name="log.path" value="/Users/dzzhyk/Desktop/各种课程作业/专业综合设计/代码实现/com.yankaizhang.movielikes/logs" />
 	<property name="log.pattern" value="%d{HH:mm:ss.SSS} [%thread] %-5level %logger{20} - [%method,%line] - %msg%n" />
 
 	<appender name="console" class="ch.qos.logback.core.ConsoleAppender">
@@ -35,7 +35,7 @@
 	</appender>
 
 	<root level="INFO">
-		<appender-ref ref="file" />
+<!--		<appender-ref ref="file" />-->
 	</root>
 
 </configuration>
