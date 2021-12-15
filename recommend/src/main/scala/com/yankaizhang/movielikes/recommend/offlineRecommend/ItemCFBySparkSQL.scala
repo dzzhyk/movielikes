@@ -12,7 +12,7 @@ object ItemCFBySparkSQL {
 
   val MONGO_URL = "mongodb://127.0.0.1:27017/movie-recommend"
   val MONGO_COLLECTION = "ratings"
-  val defaultParallelism = 24
+  val defaultParallelism = 96
 
   def main(args: Array[String]): Unit = {
 
@@ -53,7 +53,9 @@ object ItemCFBySparkSQL {
         , "movieId2", "rating2", "count2"
         , "rating1 * rating2 as product"
         , "pow(rating1, 2) as rating1Pow"
-        , "pow(rating2, 2) as rating2Pow")
+        , "pow(rating2, 2) as rating2Pow"
+        , "abs(rating1-rating2) as difference"
+      )
       .coalesce(defaultParallelism)
       .createOrReplaceTempView("joined")
 
@@ -70,6 +72,7 @@ object ItemCFBySparkSQL {
         |, sum(rating2Pow)  as  ratingSumOfSq2
         |, first(count1) as count1
         |, first(count2) as count2
+        |, sum(difference)  as  differenceSum
         |FROM joined
         |GROUP BY movieId1, movieId2
       """.stripMargin)
@@ -87,6 +90,12 @@ object ItemCFBySparkSQL {
       val ratingSumOfSq2 = row.getAs[Double](7)
       val numRaters1 = row.getAs[Long](8)
       val numRaters2 = row.getAs[Long](9)
+      var differenceSum = row.getAs[Double](10)
+      if (size == 0) {
+        differenceSum = 1000000000.0
+      } else {
+        differenceSum /= size
+      }
 
       val coOc = coOccurrence(size, numRaters1, numRaters2)
       val corr = correlation(size, dotProduct, ratingSum1, ratingSum2, ratingSumOfSq1, ratingSumOfSq2)
@@ -95,11 +104,11 @@ object ItemCFBySparkSQL {
       val jaccard = jaccardSimilarity(size, numRaters1, numRaters2)
 
 
-      (row.getInt(0), row.getInt(1), coOc, corr, cosSim, impCosSim, jaccard)
-    }).toDF("movieId_01", "movieId_02", "coOc", "corr", "cosSim", "impCosSim", "jaccard")
+      (row.getInt(0), row.getInt(1), coOc, corr, cosSim, impCosSim, jaccard, differenceSum)
+    }).toDF("movieId_01", "movieId_02", "coOc", "corr", "cosSim", "impCosSim", "jaccard", "differenceSum")
 
     val simMatrixDS: Dataset[Row] = sim
-      .repartition(defaultParallelism)    // 重新分区，以便数据均匀分布，方便继续使用
+      .repartition(defaultParallelism) // 重新分区，以便数据均匀分布，方便继续使用
       .persist(StorageLevel.MEMORY_AND_DISK_SER)
 
     import com.mongodb.spark._

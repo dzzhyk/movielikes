@@ -17,7 +17,7 @@ object StaticMovieRecommend {
   // 设置topk中的k值
   val MOST_SCORE_OF_NUMBER = 10
   // MongoDB中的表名
-  val MONGODB_RATING_COLLECTION = "Rating"
+  val MONGODB_RATING_COLLECTION = "ratings"
   val MONGODB_MOVIE_COLLECTION = "Movie"
 
   // 统计表的名称
