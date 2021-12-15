@@ -98,15 +98,9 @@ object ItemCFBySparkSQL {
       (row.getInt(0), row.getInt(1), coOc, corr, cosSim, impCosSim, jaccard)
     }).toDF("movieId_01", "movieId_02", "coOc", "corr", "cosSim", "impCosSim", "jaccard")
 
-
-    //  最终的物品相似度矩阵 A->B B->A
-    val tmp = sim.withColumnRenamed("movieId_01", "tmp")
-      .withColumnRenamed("movieId_02", "movieId_01")
-      .withColumnRenamed("tmp", "movieId_02")
-
-    val simMatrixDS: Dataset[Row] = sim.union(tmp)
-      .repartition(defaultParallelism) //  重新分区，以便数据均匀分布，方便下游用户使用
-      .cache()
+    val simMatrixDS: Dataset[Row] = sim
+      .repartition(defaultParallelism)    // 重新分区，以便数据均匀分布，方便继续使用
+      .persist(StorageLevel.MEMORY_AND_DISK_SER)
 
     import com.mongodb.spark._
     MongoSpark.save(simMatrixDS)
