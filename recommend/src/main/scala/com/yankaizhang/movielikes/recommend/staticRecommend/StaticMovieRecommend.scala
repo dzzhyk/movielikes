@@ -1,29 +1,18 @@
-package com.yankaizhang.movielikes.scala
+package com.yankaizhang.movielikes.recommend.staticRecommend
 
-import Object.{MongoConfig, Movie, Rating}
-
+import com.yankaizhang.movielikes.recommend.entity.{Movie, Rating}
+import com.yankaizhang.movielikes.recommend.util.MongoDBUtil
 import java.text.SimpleDateFormat
 import java.util.Date
+
+import com.yankaizhang.movielikes.recommend.entity.{GenresRecommendation, Recommendation}
 import org.apache.spark.SparkConf
 import org.apache.spark.sql.SparkSession
 
 /**
- * 推荐电影
- *
- * @param movieId 电影推荐的id
- * @param score   电影推荐的评分
+ * 基于统计的电影推荐
  */
-case class Recommendation(movieId: Int, score: Double)
-
-/**
- * 电影类别推荐
- *
- * @param genres 电影类别
- * @param recs   top10的电影集合
- */
-case class GenresRecommendation(genres: String, recs: Seq[Recommendation])
-
-object StaticRecommendUtil {
+object StaticMovieRecommend {
 
   // 设置topk中的k值
   val MOST_SCORE_OF_NUMBER = 10
@@ -51,20 +40,17 @@ object StaticRecommendUtil {
      * 创建spark配置
      */
     // 创建sparkConf配置
-    val sparkConf = new SparkConf().setMaster(config("spark.cores")).setAppName("StatisticsRecommender")
+    val sparkConf = new SparkConf()
+      .setMaster(config("spark.cores"))
+      .setAppName("StatisticsRecommender")
+
     // 创建sparkSession
     val spark = SparkSession.builder().config(sparkConf).config("spark.mongodb.input.uri", config("mongo.uri"))
       .config("spark.mongodb.output.uri", config("mongo.uri"))
       .getOrCreate()
 
-    /**
-     * 加载数据
-     */
-
-    var mongoConfig = MongoConfig(config("mongo.uri"), config("mongo.db"))
 
     import spark.implicits._
-
     val ratingDF = MongoDBUtil.readDFInMongoDB(spark,MONGODB_RATING_COLLECTION).as[Rating].toDF()
     val movieDF = MongoDBUtil.readDFInMongoDB(spark,MONGODB_MOVIE_COLLECTION).as[Movie].toDF()
 
@@ -139,7 +125,7 @@ object StaticRecommendUtil {
         // 通过评分大小进行降序排序
         case (genres, items) =>
           GenresRecommendation(genres, items.toList.sortWith(_._2 > _._2)
-          .take(MOST_SCORE_OF_NUMBER).map(item => Recommendation(item._1, item._2)))
+            .take(MOST_SCORE_OF_NUMBER).map(item => Recommendation(item._1, item._2)))
       }.toDF()
 
     MongoDBUtil.storeDFInMongoDB(genresTopMovies,GENRES_TOP_MOVIES)

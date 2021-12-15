@@ -111,12 +111,6 @@
                     <descriptorRefs>
                         <descriptorRef>jar-with-dependencies</descriptorRef>
                     </descriptorRefs>
-                    <archive>
-                        <manifest>
-                            <!-- 指定入口scala类 -->
-                            <mainClass>com.yankaizhang.movielikes.recommend.offline.ItemCFRecommend</mainClass>
-                        </manifest>
-                    </archive>
                 </configuration>
                 <executions>
                     <execution>

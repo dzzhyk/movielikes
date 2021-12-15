@@ -1,4 +1,4 @@
-package com.yankaizhang.movielikes.recommend.offline
+package com.yankaizhang.movielikes.recommend.offlineRecommend
 
 import com.yankaizhang.movielikes.recommend.entity.Rating
 import org.apache.spark.sql.{DataFrame, Dataset, Row, SparkSession}

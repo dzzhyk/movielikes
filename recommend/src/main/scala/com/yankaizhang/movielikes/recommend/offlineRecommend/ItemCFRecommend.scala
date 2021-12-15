@@ -1,8 +1,8 @@
-package com.yankaizhang.movielikes.recommend.offline
+package com.yankaizhang.movielikes.recommend.offlineRecommend
 
 import com.yankaizhang.movielikes.recommend.entity.Rating
 import org.apache.spark.rdd.RDD
-import org.apache.spark.sql.{DataFrame, Dataset, SparkSession}
+import org.apache.spark.sql.{DataFrame, SparkSession}
 import org.apache.spark.storage.StorageLevel
 
 import scala.collection.mutable.ArrayBuffer
@@ -10,6 +10,7 @@ import scala.collection.mutable.ArrayBuffer
 
 /**
  * 基于物品的离线协同过滤
+ * RDD实现
  */
 object ItemCFRecommend {
 
@@ -24,6 +25,8 @@ object ItemCFRecommend {
       .appName("ItemCFRecommend")
       .config("spark.network.timeout", "10000000")
 //      .config("spark.mongodb.output.uri", "mongodb://10.237.53.6:27017/spark-output")
+      .config("spark.executor.memory", "12g")
+      .config("spark.executor.cores", "4")
       .getOrCreate()
 
     // 加载最新rating数据
@@ -98,4 +101,5 @@ object ItemCFRecommend {
 
     println("相似度矩阵记录数: ", simMatrixRDD.count())
   }
+
 }
