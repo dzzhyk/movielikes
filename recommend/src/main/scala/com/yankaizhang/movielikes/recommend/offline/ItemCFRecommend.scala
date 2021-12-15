@@ -1,6 +1,6 @@
 package com.yankaizhang.movielikes.recommend.offline
 
-import com.yankaizhang.movielikes.recommend.entity.MongoRatingEntity
+import com.yankaizhang.movielikes.recommend.entity.Rating
 import org.apache.spark.rdd.RDD
 import org.apache.spark.sql.{DataFrame, Dataset, SparkSession}
 import org.apache.spark.storage.StorageLevel
@@ -34,7 +34,7 @@ object ItemCFRecommend {
       .option("uri", MONGO_URL)
       .option("collection", MONGO_COLLECTION)
       .load()
-      .as[MongoRatingEntity]
+      .as[Rating]
       .rdd
       .mapPartitions(part => {
         part.map(rating => (rating.userId, rating.movieId, rating.rating))
