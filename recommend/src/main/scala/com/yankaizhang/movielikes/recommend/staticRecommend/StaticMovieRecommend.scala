@@ -32,8 +32,8 @@ object StaticMovieRecommend {
      */
     val config = Map(
       "spark.cores" -> "local[*]",
-      "mongo.uri" -> "mongodb://127.0.0.1:27017/recommender",
-      "mongo.db" -> "recommender"
+      "mongo.uri" -> "mongodb://127.0.0.1:27017/movie-recommend",
+      "mongo.db" -> "movie-recommend"
     )
 
     /**
