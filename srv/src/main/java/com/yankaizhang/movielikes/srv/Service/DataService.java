@@ -45,17 +45,6 @@ public class DataService {
         return averageMoviesScoreCollection;
     }
 
-    public List<Recommendation> getHotRecommendations(Integer num) {
-        MongoCollection<Document> rateMoreMoviesRecentlyCollection = mongoClient.getDatabase(CollectionName.MONGODB_DATABASE).getCollection(CollectionName.MONGODB_RATE_MORE_MOVIES_RECENTLY_COLLECTION);
-        FindIterable<Document> documents = rateMoreMoviesRecentlyCollection.find().sort(Sorts.descending("yearmonth")).limit(num);
-
-        List<Recommendation> recommendations = new ArrayList<>();
-        for (Document document : documents) {
-            recommendations.add(new Recommendation(document.getInteger("movieId"), 0D));
-        }
-        return recommendations;
-    }
-
     public List<Movie> getRecommendMovies(List<Recommendation> recommendations) {
         List<Integer> ids = new ArrayList<>();
         for (Recommendation rec : recommendations) {
@@ -86,5 +75,28 @@ public class DataService {
             e.printStackTrace();
         }
         return movie;
+    }
+
+    public List<Recommendation> getHotRecommendations(Integer num) {
+        MongoCollection<Document> rateMoreMoviesRecentlyCollection = mongoClient.getDatabase(CollectionName.MONGODB_DATABASE).getCollection(CollectionName.MONGODB_RATE_MORE_MOVIES_RECENTLY_COLLECTION);
+        FindIterable<Document> documents = rateMoreMoviesRecentlyCollection.find().sort(Sorts.descending("yearmonth")).limit(num);
+
+        List<Recommendation> recommendations = new ArrayList<>();
+        for (Document document : documents) {
+            recommendations.add(new Recommendation(document.getInteger("movieId"), 0D));
+        }
+        return recommendations;
+    }
+
+    public List<Recommendation> getRateMoreRecommendations(Integer num) {
+
+        MongoCollection<Document> rateMoreMoviesCollection = mongoClient.getDatabase(CollectionName.MONGODB_DATABASE).getCollection(CollectionName.MONGODB_RATE_MORE_MOVIES_COLLECTION);
+        FindIterable<Document> documents = rateMoreMoviesCollection.find().sort(Sorts.descending("count")).limit(num);
+        List<Recommendation> recommendations = new ArrayList<>();
+        for (Document document : documents) {
+            recommendations.add(new Recommendation(document.getInteger("movieId"), 0D));
+        }
+
+        return recommendations;
     }
 }

@@ -22,7 +22,13 @@ public class RecommendController {
     @ResponseBody
     public List getHotMovies() {
         List<Recommendation> recommendations = dataService.getHotRecommendations(5);
+        return dataService.getRecommendMovies(recommendations);
+    }
 
+    @GetMapping("/recommend/rate")
+    @ResponseBody
+    public List getRateMoreMovies() {
+        List<Recommendation> recommendations = dataService.getRateMoreRecommendations(5);
         return dataService.getRecommendMovies(recommendations);
     }
 }
