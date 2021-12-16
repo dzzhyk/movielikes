@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@RequestMapping("/recommend")
 @Controller
 public class RecommendController {
 
@@ -18,14 +19,14 @@ public class RecommendController {
         this.dataService = dataService;
     }
 
-    @GetMapping("/recommend/hot")
+    @GetMapping("/hot")
     @ResponseBody
     public List getHotMovies() {
         List<Recommendation> recommendations = dataService.getHotRecommendations(5);
         return dataService.getRecommendMovies(recommendations);
     }
 
-    @GetMapping("/recommend/rate")
+    @GetMapping("/rate")
     @ResponseBody
     public List getRateMoreMovies() {
         List<Recommendation> recommendations = dataService.getRateMoreRecommendations(5);
