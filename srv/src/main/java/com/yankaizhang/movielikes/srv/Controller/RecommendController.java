@@ -1,6 +1,5 @@
 package com.yankaizhang.movielikes.srv.Controller;
 
-import com.yankaizhang.movielikes.srv.HotRecommendation;
 import com.yankaizhang.movielikes.srv.Recommendation;
 import com.yankaizhang.movielikes.srv.Service.DataService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,7 +21,7 @@ public class RecommendController {
     @GetMapping("/recommend/hot")
     @ResponseBody
     public List getHotMovies() {
-        List<Recommendation> recommendations = dataService.getHotRecommendations(new HotRecommendation(5));
+        List<Recommendation> recommendations = dataService.getHotRecommendations(5);
 
         return dataService.getRecommendMovies(recommendations);
     }

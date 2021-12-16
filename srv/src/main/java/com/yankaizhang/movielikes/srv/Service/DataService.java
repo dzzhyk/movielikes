@@ -7,7 +7,6 @@ import com.mongodb.client.model.Filters;
 import com.mongodb.client.model.Sorts;
 import com.mongodb.util.JSON;
 import com.yankaizhang.movielikes.srv.Entity.Movie;
-import com.yankaizhang.movielikes.srv.HotRecommendation;
 import com.yankaizhang.movielikes.srv.Recommendation;
 import com.yankaizhang.movielikes.srv.Utils.CollectionName;
 import org.bson.Document;
@@ -46,9 +45,9 @@ public class DataService {
         return averageMoviesScoreCollection;
     }
 
-    public List<Recommendation> getHotRecommendations(HotRecommendation hotRecommendation) {
+    public List<Recommendation> getHotRecommendations(Integer num) {
         MongoCollection<Document> rateMoreMoviesRecentlyCollection = mongoClient.getDatabase(CollectionName.MONGODB_DATABASE).getCollection(CollectionName.MONGODB_RATE_MORE_MOVIES_RECENTLY_COLLECTION);
-        FindIterable<Document> documents = rateMoreMoviesRecentlyCollection.find().sort(Sorts.descending("yearmonth")).limit(hotRecommendation.getSum());
+        FindIterable<Document> documents = rateMoreMoviesRecentlyCollection.find().sort(Sorts.descending("yearmonth")).limit(num);
 
         List<Recommendation> recommendations = new ArrayList<>();
         for (Document document : documents) {
