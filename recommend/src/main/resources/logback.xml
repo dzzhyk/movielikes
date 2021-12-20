@@ -1,14 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration>
 
-	<include resource="org/springframework/boot/logging/logback/defaults.xml" />
-
 	<property name="log.path" value="/Users/dzzhyk/Desktop/各种课程作业/专业综合设计/代码实现/movielikes/logs/recommend" />
 	<property name="log.pattern" value="%d{HH:mm:ss.SSS} [%thread] %-5level %logger{20} - [%method,%line] - %msg%n" />
 
 	<appender name="console" class="ch.qos.logback.core.ConsoleAppender">
 		<encoder>
-			<pattern>${CONSOLE_LOG_PATTERN}</pattern>
+			<pattern>${log.pattern}</pattern>
 		</encoder>
 	</appender>
 
@@ -35,6 +33,7 @@
 	</appender>
 
 	<root level="INFO">
+<!--		<appender-ref ref="console" />-->
 		<appender-ref ref="file" />
 	</root>
 

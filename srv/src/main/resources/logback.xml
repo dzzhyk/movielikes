@@ -3,8 +3,7 @@
 
 	<include resource="org/springframework/boot/logging/logback/defaults.xml" />
 
-	<property name="log.path" value="/Users/dzzhyk/Desktop/各种课程作业/专业综合设计/代码实现/com.yankaizhang.movielikes/logs" />
-	<property name="log.pattern" value="%d{HH:mm:ss.SSS} [%thread] %-5level %logger{20} - [%method,%line] - %msg%n" />
+	<property name="log.path" value="/Users/dzzhyk/Desktop/各种课程作业/专业综合设计/代码实现/movielikes/logs/srv" />
 
 	<appender name="console" class="ch.qos.logback.core.ConsoleAppender">
 		<encoder>
@@ -22,7 +21,7 @@
 			<maxHistory>60</maxHistory>
 		</rollingPolicy>
 		<encoder>
-			<pattern>${log.pattern}</pattern>
+			<pattern>${FILE_LOG_PATTERN}</pattern>
 		</encoder>
 		<filter class="ch.qos.logback.classic.filter.LevelFilter">
 			<!-- 过滤的级别 -->
@@ -35,7 +34,8 @@
 	</appender>
 
 	<root level="INFO">
-<!--		<appender-ref ref="file" />-->
+		<appender-ref ref="console" />
+		<appender-ref ref="file" />
 	</root>
 
 </configuration>
