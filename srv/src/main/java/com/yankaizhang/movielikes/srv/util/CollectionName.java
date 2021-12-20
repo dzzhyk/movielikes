@@ -1,4 +1,4 @@
-package com.yankaizhang.movielikes.srv.Utils;
+package com.yankaizhang.movielikes.srv.util;
 
 public class CollectionName {
 

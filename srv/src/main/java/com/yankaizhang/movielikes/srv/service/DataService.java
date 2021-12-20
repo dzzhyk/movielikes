@@ -1,4 +1,4 @@
-package com.yankaizhang.movielikes.srv.Service;
+package com.yankaizhang.movielikes.srv.service;
 
 import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoClient;
@@ -6,10 +6,10 @@ import com.mongodb.client.MongoCollection;
 import com.mongodb.client.model.Filters;
 import com.mongodb.client.model.Sorts;
 import com.mongodb.util.JSON;
-import com.yankaizhang.movielikes.srv.Entity.Movie;
-import com.yankaizhang.movielikes.srv.Recommendation;
-import com.yankaizhang.movielikes.srv.TopGenresRecommendation;
-import com.yankaizhang.movielikes.srv.Utils.CollectionName;
+import com.yankaizhang.movielikes.srv.entity.Movie;
+import com.yankaizhang.movielikes.srv.entity.Recommendation;
+import com.yankaizhang.movielikes.srv.entity.TopGenresRecommendation;
+import com.yankaizhang.movielikes.srv.util.CollectionName;
 import org.bson.Document;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

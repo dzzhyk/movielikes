@@ -1,4 +1,4 @@
-package com.yankaizhang.movielikes.srv.Entity;
+package com.yankaizhang.movielikes.srv.entity;
 
 import lombok.Data;
 

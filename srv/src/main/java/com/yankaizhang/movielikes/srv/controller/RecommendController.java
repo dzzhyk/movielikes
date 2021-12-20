@@ -1,7 +1,7 @@
-package com.yankaizhang.movielikes.srv.Controller;
+package com.yankaizhang.movielikes.srv.controller;
 
-import com.yankaizhang.movielikes.srv.Recommendation;
-import com.yankaizhang.movielikes.srv.Service.DataService;
+import com.yankaizhang.movielikes.srv.entity.Recommendation;
+import com.yankaizhang.movielikes.srv.service.DataService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
