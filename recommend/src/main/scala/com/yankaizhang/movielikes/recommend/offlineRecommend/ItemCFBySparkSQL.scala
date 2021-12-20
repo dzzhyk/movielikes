@@ -116,7 +116,7 @@ object ItemCFBySparkSQL {
         , "movieId_02 as otherItem"
         , SIM_MEASURE
         , s"$SIM_MEASURE * rating as simProduct")
-      .where("simProduct >= 3.5")
+      .where(s"$SIM_MEASURE >= 0.75")
       .coalesce(defaultParallelism)
       .createOrReplaceTempView("tempTable")
 
