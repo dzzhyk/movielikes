@@ -61,7 +61,7 @@ object ItemCFBySparkSQL {
         , "pow(rating1, 2) as rating1Pow"
         , "pow(rating2, 2) as rating2Pow")
       .coalesce(defaultParallelism)
-      .createOrReplaceTempView("joined")
+      .createOrReplaceTempView("userId_joined")
 
 
     // 5. 计算物品相似度
@@ -72,7 +72,7 @@ object ItemCFBySparkSQL {
         |, sum(product) as dotProduct
         |, sum(rating1Pow) as  ratingSumOfSq1
         |, sum(rating2Pow)  as  ratingSumOfSq2
-        |FROM joined
+        |FROM userId_joined
         |GROUP BY movieId1, movieId2
       """.stripMargin)
       .coalesce(defaultParallelism)
@@ -116,6 +116,7 @@ object ItemCFBySparkSQL {
         , "movieId_02 as otherItem"
         , SIM_MEASURE
         , s"$SIM_MEASURE * rating as simProduct")
+      .where("simProduct >= 3.5")
       .coalesce(defaultParallelism)
       .createOrReplaceTempView("tempTable")
 
@@ -134,7 +135,7 @@ object ItemCFBySparkSQL {
       .mapPartitions(part => {
         part.map(row => (row.getInt(0), (row.getInt(1), row.getDouble(2))))
       })
-      .groupByKey(defaultParallelism)
+      .aggregateByKey[Seq[(Int, Double)]](Seq[(Int, Double)]())(_ :+ _, _ ++ _)
       .mapValues(xs => {
         var sequence = Seq[(Int, Double)]()
         val iter = xs.iterator
