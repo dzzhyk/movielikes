@@ -38,10 +38,8 @@ object SimilarityMeasures {
    * The cosine similarity between two vectors A, B is
    * dotProduct(A, B) / (norm(A) * norm(B))
    */
-  def cosineSimilarity(): (Double, Double, Double) => Double = {
-    (dotProduct: Double, ratingNorm: Double, rating2Norm: Double) => {
-      dotProduct / (ratingNorm * rating2Norm)
-    }
+  def cosineSimilarity(dotProduct: Double, ratingNorm: Double, rating2Norm: Double): Double = {
+    dotProduct / (ratingNorm * rating2Norm)
   }
 
   /**

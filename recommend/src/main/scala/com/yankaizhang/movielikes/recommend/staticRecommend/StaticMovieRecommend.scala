@@ -4,7 +4,7 @@ import java.text.SimpleDateFormat
 import java.util.Date
 
 import com.yankaizhang.movielikes.recommend.entity.{GenresRecommendation, Movie, Rating, Recommendation}
-import com.yankaizhang.movielikes.recommend.offlineRecommend.ItemCFBySparkSQL.defaultParallelism
+import com.yankaizhang.movielikes.recommend.offlineRecommend.ItemCFByCosSim.defaultParallelism
 import com.yankaizhang.movielikes.recommend.util.MongoDBUtil
 import org.apache.spark.sql.SparkSession
 
