@@ -4,7 +4,6 @@ import java.text.SimpleDateFormat
 import java.util.Date
 
 import com.yankaizhang.movielikes.recommend.entity.{GenresRecommendation, Movie, Rating, Recommendation}
-import com.yankaizhang.movielikes.recommend.offlineRecommend.ItemCFByCosSim.defaultParallelism
 import com.yankaizhang.movielikes.recommend.util.MongoDBUtil
 import org.apache.spark.sql.SparkSession
 
@@ -12,6 +11,8 @@ import org.apache.spark.sql.SparkSession
  * 基于统计的电影推荐
  */
 object StaticMovieRecommend {
+
+  val defaultParallelism = 20
 
   // 设置topK
   val MOST_SCORE_OF_NUMBER = 10
