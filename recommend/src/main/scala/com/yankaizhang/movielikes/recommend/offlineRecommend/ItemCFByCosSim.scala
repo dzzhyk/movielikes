@@ -13,20 +13,13 @@ object ItemCFByCosSim {
 
   val MONGO_URL = "mongodb://127.0.0.1:27017/movie_recommend"
   val MONGO_COLLECTION = "ratings"
-  val defaultParallelism = 20
+  val defaultParallelism = 72
   val RECOMMEND_COUNT = 10
 
   def main(args: Array[String]): Unit = {
 
     // 1. 创建sparkSession
     val sparkSession = SparkSession.builder()
-      .master("local[*]")
-      .appName("ItemCFByCosSim")
-      .config("spark.executor.memory", "16g")
-      .config("spark.executor.cores", "12")
-      .config("spark.default.parallelism", defaultParallelism.toString)
-      .config("spark.sql.shuffle.partitions", defaultParallelism.toString)
-      .config("spark.mongodb.output.uri", "mongodb://127.0.0.1:27017/spark_output.itemCF_cosSim_result")
       .getOrCreate()
 
     import sparkSession.implicits._
