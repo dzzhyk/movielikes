@@ -36,7 +36,7 @@ public class DataService {
 
     private MongoCollection<Document> getMovieCollection() {
         if (null == movieCollection)
-            movieCollection = mongoClient.getDatabase(CollectionName.MONGODB_DATABASE).getCollection(CollectionName.MONGODB_MOVIE_COLLECTION);
+            movieCollection = mongoClient.getDatabase(CollectionName.MONGODB_INPUT).getCollection(CollectionName.MONGODB_MOVIE_COLLECTION);
         return movieCollection;
     }
 
@@ -78,19 +78,6 @@ public class DataService {
         return movie;
     }
 
-    private List<Recommendation> exchange(Document document, int maxItems) {
-        List<Recommendation> recommendations = new ArrayList<>();
-        if (null == document || document.isEmpty())
-            return recommendations;
-        ArrayList<Document> recs = document.get("recs", ArrayList.class);
-        for (Document recDoc : recs) {
-            recommendations.add(new Recommendation(recDoc.getInteger("movieId"), recDoc.getDouble("score")));
-        }
-
-        recommendations.sort((o1, o2) -> o1.getScore() > o2.getScore() ? -1 : 1);
-        return recommendations.subList(0, Math.min(maxItems, recommendations.size()));
-    }
-
     public List<Recommendation> getHotRecommendations(Integer num) {
         MongoCollection<Document> rateMoreMoviesRecentlyCollection = mongoClient.getDatabase(CollectionName.MONGODB_DATABASE).getCollection(CollectionName.MONGODB_RATE_MORE_MOVIES_RECENTLY_COLLECTION);
         FindIterable<Document> documents = rateMoreMoviesRecentlyCollection.find().sort(Sorts.descending("yearmonth")).limit(num);
@@ -114,10 +101,35 @@ public class DataService {
         return recommendations;
     }
 
+    private List<Recommendation> exchange(Document document, int maxItems) {
+        List<Recommendation> recommendations = new ArrayList<>();
+        if (null == document || document.isEmpty())
+            return recommendations;
+        ArrayList<Document> recs = document.get("recs", ArrayList.class);
+        for (Document recDoc : recs) {
+            recommendations.add(new Recommendation(recDoc.getInteger("movieId"), recDoc.getDouble("score")));
+        }
+
+        recommendations.sort((o1, o2) -> o1.getScore() > o2.getScore() ? -1 : 1);
+        return recommendations.subList(0, Math.min(maxItems, recommendations.size()));
+    }
+
     public List<Recommendation> getTopGenresRecommendations(TopGenresRecommendation topGenresRecommendation){
         Document genresTopMovies = mongoClient.getDatabase(CollectionName.MONGODB_DATABASE).getCollection(CollectionName.MONGODB_GENRES_TOP_MOVIES_COLLECTION)
                 .find(Filters.eq("genres",topGenresRecommendation.getGenres())).first();
         return exchange(genresTopMovies,topGenresRecommendation.getSum());
+    }
+
+    public List<Movie> userRecommend(Integer userId) {
+        Document document =mongoClient.getDatabase(CollectionName.MONGODB_DATABASE).getCollection(CollectionName.MONGODB_ITEMCF_RESULT_BIG)
+                .find(Filters.eq("userId",userId)).first();
+        List<Integer>recommendations = new ArrayList<>();
+        ArrayList<Document> recs=document.get("recommendations", ArrayList.class);
+        for(Document rec: recs) {
+            recommendations.add(rec.getInteger("movieId"));
+        }
+
+        return getMovies(recommendations);
     }
 
 }
