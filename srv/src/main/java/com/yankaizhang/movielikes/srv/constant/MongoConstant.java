@@ -1,6 +1,6 @@
-package com.yankaizhang.movielikes.srv.util;
+package com.yankaizhang.movielikes.srv.constant;
 
-public class CollectionName {
+public class MongoConstant {
 
     public static String MONGODB_INPUT = "movie_recommend_big";
 

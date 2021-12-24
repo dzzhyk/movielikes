@@ -2,10 +2,10 @@ package com.yankaizhang.movielikes.srv;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import springfox.documentation.oas.annotations.EnableOpenApi;
 
-/**
- * @author dzzhyk
- */
+
+@EnableOpenApi
 @SpringBootApplication
 public class MovielikesApplication {
 

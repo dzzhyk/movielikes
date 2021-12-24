@@ -70,7 +70,7 @@ object ImpCosSim {
         val dotProduct = row.getAs[Double](2)
         val ratingSumOfSq1 = row.getAs[Double](3)
         val ratingSum2 = row.getAs[Double](4)
-        val size = row.getAs[Int](5)
+        val size = row.getAs[Long](5)
         val count1 = row.getAs[Long](6)
         val count2 = row.getAs[Long](7)
 

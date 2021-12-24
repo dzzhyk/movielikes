@@ -9,7 +9,7 @@ import com.mongodb.util.JSON;
 import com.yankaizhang.movielikes.srv.entity.Movie;
 import com.yankaizhang.movielikes.srv.entity.Recommendation;
 import com.yankaizhang.movielikes.srv.entity.TopGenresRecommendation;
-import com.yankaizhang.movielikes.srv.util.CollectionName;
+import com.yankaizhang.movielikes.srv.constant.MongoConstant;
 import org.bson.Document;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -20,6 +20,9 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * 推荐结果服务Service层
+ */
 @SuppressWarnings("ALL")
 @Service
 public class DataService {
@@ -37,14 +40,18 @@ public class DataService {
 
     private MongoCollection<Document> getMovieCollection() {
         if (null == movieCollection) {
-            movieCollection = mongoClient.getDatabase(CollectionName.MONGODB_INPUT).getCollection(CollectionName.MONGODB_MOVIE_COLLECTION);
+            movieCollection = mongoClient
+                    .getDatabase(MongoConstant.MONGODB_INPUT)
+                    .getCollection(MongoConstant.MONGODB_MOVIE_COLLECTION);
         }
         return movieCollection;
     }
 
     private MongoCollection<Document> getAverageMoviesScoreCollection() {
         if (null == averageMoviesScoreCollection) {
-            averageMoviesScoreCollection = mongoClient.getDatabase(CollectionName.MONGODB_DATABASE).getCollection(CollectionName.MONGODB_AVERAGE_MOVIES_SCORE_COLLECTION);
+            averageMoviesScoreCollection = mongoClient
+                    .getDatabase(MongoConstant.MONGODB_DATABASE)
+                    .getCollection(MongoConstant.MONGODB_AVERAGE_MOVIES_SCORE_COLLECTION);
         }
         return averageMoviesScoreCollection;
     }
@@ -83,7 +90,7 @@ public class DataService {
     }
 
     public List<Recommendation> getHotRecommendations(Integer num) {
-        MongoCollection<Document> rateMoreMoviesRecentlyCollection = mongoClient.getDatabase(CollectionName.MONGODB_DATABASE).getCollection(CollectionName.MONGODB_RATE_MORE_MOVIES_RECENTLY_COLLECTION);
+        MongoCollection<Document> rateMoreMoviesRecentlyCollection = mongoClient.getDatabase(MongoConstant.MONGODB_DATABASE).getCollection(MongoConstant.MONGODB_RATE_MORE_MOVIES_RECENTLY_COLLECTION);
         FindIterable<Document> documents = rateMoreMoviesRecentlyCollection.find().sort(Sorts.descending("yearmonth")).limit(num);
 
         List<Recommendation> recommendations = new ArrayList<>();
@@ -95,7 +102,7 @@ public class DataService {
 
     public List<Recommendation> getRateMoreRecommendations(Integer num) {
 
-        MongoCollection<Document> rateMoreMoviesCollection = mongoClient.getDatabase(CollectionName.MONGODB_DATABASE).getCollection(CollectionName.MONGODB_RATE_MORE_MOVIES_COLLECTION);
+        MongoCollection<Document> rateMoreMoviesCollection = mongoClient.getDatabase(MongoConstant.MONGODB_DATABASE).getCollection(MongoConstant.MONGODB_RATE_MORE_MOVIES_COLLECTION);
         FindIterable<Document> documents = rateMoreMoviesCollection.find().sort(Sorts.descending("count")).limit(num);
         List<Recommendation> recommendations = new ArrayList<>();
         for (Document document : documents) {
@@ -119,13 +126,13 @@ public class DataService {
     }
 
     public List<Recommendation> getTopGenresRecommendations(TopGenresRecommendation topGenresRecommendation){
-        Document genresTopMovies = mongoClient.getDatabase(CollectionName.MONGODB_DATABASE).getCollection(CollectionName.MONGODB_GENRES_TOP_MOVIES_COLLECTION)
+        Document genresTopMovies = mongoClient.getDatabase(MongoConstant.MONGODB_DATABASE).getCollection(MongoConstant.MONGODB_GENRES_TOP_MOVIES_COLLECTION)
                 .find(Filters.eq("genres",topGenresRecommendation.getGenres())).first();
         return exchange(genresTopMovies,topGenresRecommendation.getSum());
     }
 
     public List<Movie> userRecommend(Integer userId) {
-        Document document =mongoClient.getDatabase(CollectionName.MONGODB_DATABASE).getCollection(CollectionName.MONGODB_ITEMCF_RESULT_BIG)
+        Document document =mongoClient.getDatabase(MongoConstant.MONGODB_DATABASE).getCollection(MongoConstant.MONGODB_ITEMCF_RESULT_BIG)
                 .find(Filters.eq("userId",userId)).first();
         List<Integer>recommendations = new ArrayList<>();
         ArrayList<Document> recs=document.get("recommendations", ArrayList.class);
