@@ -26,7 +26,7 @@ public class RecommendController {
     @ApiOperation("获取热门电影榜单")
     @GetMapping("/hot")
     @ResponseBody
-    public List<Movie>  getHotMovies() {
+    public List<Movie> getHotMovies() {
         List<Recommendation> recommendations = dataService.getHotRecommendations(5);
         return dataService.getRecommendMovies(recommendations);
     }
@@ -34,7 +34,7 @@ public class RecommendController {
     @ApiOperation("评分最多电影榜单")
     @GetMapping("/rate")
     @ResponseBody
-    public List<Movie>  getRateMoreMovies() {
+    public List<Movie> getRateMoreMovies() {
         List<Recommendation> recommendations = dataService.getRateMoreRecommendations(5);
         return dataService.getRecommendMovies(recommendations);
     }
@@ -43,7 +43,7 @@ public class RecommendController {
     @GetMapping("/user")
     @ResponseBody
     public List<Movie> getUserRecommendMovies(Integer userId) {
-        return dataService.userRecommend(userId);
+        return dataService.getUserRecommend(userId);
     }
 
 

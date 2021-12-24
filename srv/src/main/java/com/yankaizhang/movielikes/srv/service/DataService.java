@@ -9,9 +9,9 @@ import com.mongodb.util.JSON;
 import com.yankaizhang.movielikes.srv.entity.Movie;
 import com.yankaizhang.movielikes.srv.entity.Recommendation;
 import com.yankaizhang.movielikes.srv.entity.TopGenresRecommendation;
-import com.yankaizhang.movielikes.srv.constant.MongoConstant;
 import org.bson.Document;
 import org.springframework.beans.factory.annotation.Autowired;
+import com.yankaizhang.movielikes.srv.constant.MongoConstant;
 import org.springframework.stereotype.Service;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -40,18 +40,14 @@ public class DataService {
 
     private MongoCollection<Document> getMovieCollection() {
         if (null == movieCollection) {
-            movieCollection = mongoClient
-                    .getDatabase(MongoConstant.MONGODB_INPUT)
-                    .getCollection(MongoConstant.MONGODB_MOVIE_COLLECTION);
+            movieCollection = mongoClient.getDatabase(MongoConstant.MONGODB_INPUT).getCollection(MongoConstant.MONGODB_MOVIE_COLLECTION);
         }
         return movieCollection;
     }
 
     private MongoCollection<Document> getAverageMoviesScoreCollection() {
         if (null == averageMoviesScoreCollection) {
-            averageMoviesScoreCollection = mongoClient
-                    .getDatabase(MongoConstant.MONGODB_DATABASE)
-                    .getCollection(MongoConstant.MONGODB_AVERAGE_MOVIES_SCORE_COLLECTION);
+            averageMoviesScoreCollection = mongoClient.getDatabase(MongoConstant.MONGODB_DATABASE).getCollection(MongoConstant.MONGODB_AVERAGE_MOVIES_SCORE_COLLECTION);
         }
         return averageMoviesScoreCollection;
     }
@@ -125,18 +121,18 @@ public class DataService {
         return recommendations.subList(0, Math.min(maxItems, recommendations.size()));
     }
 
-    public List<Recommendation> getTopGenresRecommendations(TopGenresRecommendation topGenresRecommendation){
+    public List<Recommendation> getTopGenresRecommendations(TopGenresRecommendation topGenresRecommendation) {
         Document genresTopMovies = mongoClient.getDatabase(MongoConstant.MONGODB_DATABASE).getCollection(MongoConstant.MONGODB_GENRES_TOP_MOVIES_COLLECTION)
-                .find(Filters.eq("genres",topGenresRecommendation.getGenres())).first();
-        return exchange(genresTopMovies,topGenresRecommendation.getSum());
+                .find(Filters.eq("genres", topGenresRecommendation.getGenres())).first();
+        return exchange(genresTopMovies, topGenresRecommendation.getSum());
     }
 
-    public List<Movie> userRecommend(Integer userId) {
-        Document document =mongoClient.getDatabase(MongoConstant.MONGODB_DATABASE).getCollection(MongoConstant.MONGODB_ITEMCF_RESULT_BIG)
-                .find(Filters.eq("userId",userId)).first();
-        List<Integer>recommendations = new ArrayList<>();
-        ArrayList<Document> recs=document.get("recommendations", ArrayList.class);
-        for(Document rec: recs) {
+    public List<Movie> getUserRecommend(Integer userId) {
+        Document document = mongoClient.getDatabase(MongoConstant.MONGODB_DATABASE).getCollection(MongoConstant.MONGODB_ITEMCF_RESULT_BIG)
+                .find(Filters.eq("userId", userId)).first();
+        List<Integer> recommendations = new ArrayList<>();
+        ArrayList<Document> recs = document.get("recommendations", ArrayList.class);
+        for (Document rec : recs) {
             recommendations.add(rec.getInteger("movieId"));
         }
 
