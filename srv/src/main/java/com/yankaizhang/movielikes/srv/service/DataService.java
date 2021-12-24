@@ -124,7 +124,7 @@ public class DataService {
         return exchange(genresTopMovies, topGenresRecommendation.getSum());
     }
 
-    public List<Movie> userRecommend(Integer userId) {
+    public List<Movie> getUserRecommend(Integer userId) {
         Document document = mongoClient.getDatabase(CollectionName.MONGODB_DATABASE).getCollection(CollectionName.MONGODB_ITEMCF_RESULT_BIG)
                 .find(Filters.eq("userId", userId)).first();
         List<Integer> recommendations = new ArrayList<>();
