@@ -54,22 +54,24 @@ object OfflineMovieRecommend {
       .toDF("movieId1", "movieId2", "similarity")
       .persist(StorageLevel.MEMORY_ONLY_SER)
 
-    /*
-        db.ratings.aggregate([
-            {
-                $group : {
-                _id: "$userId",
-                movie_list: {
-                    $push: {movieId: "$movieId", rating: "$rating"}}}
-                },
-                {$project: {_id: 0, userId: "$_id", movie_list: {$slice: ["$movie_list", 0, 4]}}},
-                {$unwind: "$movie_list"},
-                {$project: {_id: 0, userId: 1, movieId: "$movie_list.movieId", rating: "$movie_list.rating"}},
-                {$out: "rated_movies"}
-            ],
-            {allowDiskUse: true}
-        )
-         */
+/*
+db.ratings.aggregate([
+        {$sort : {userId: 1, rating: -1}},
+        {
+            $group : {
+            _id: "$userId",
+            movie_list: {
+                $push: {movieId: "$movieId", rating: "$rating"}}
+            }
+        },
+        {$project: {_id: 0, userId: "$_id", movie_list: {$slice: ["$movie_list", 0, 10]}}},
+        {$unwind: "$movie_list"},
+        {$project: {_id: 0, userId: 1, movieId: "$movie_list.movieId", rating: "$movie_list.rating"}},
+        {$out: "rated_movies"}
+    ],
+    {allowDiskUse: true}
+)
+*/
 
     // 3. 加载用户主动评分的电影
     val userInterestDF = sparkSession.read
