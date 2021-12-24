@@ -1,9 +1,9 @@
 package com.yankaizhang.movielikes.recommend.offlineRecommend
 
+import com.yankaizhang.movielikes.recommend.constant.OfflineConstant
 import com.yankaizhang.movielikes.recommend.entity.{Similarity, UserRecommendation}
 import org.apache.spark.sql.{DataFrame, SparkSession}
 import org.apache.spark.storage.StorageLevel
-import com.yankaizhang.movielikes.recommend.constant.SimilarityMeasureConstant.{COS_SIM, IMP_COS_SIM, CO_OCCUR_SIM}
 
 
 /**
@@ -11,43 +11,20 @@ import com.yankaizhang.movielikes.recommend.constant.SimilarityMeasureConstant.{
  */
 object OfflineMovieRecommend {
 
-  // 是否为大数据
-  val isBig = true
-
-  val SimMatrix = Map(
-    COS_SIM -> (if (isBig) "itemCF_cosSim_simMatrix_big" else "itemCF_cosSim_simMatrix"),
-    IMP_COS_SIM -> (if (isBig) "itemCF_impCosSim_simMatrix_big" else "itemCF_impCosSim_simMatrix"),
-    CO_OCCUR_SIM -> (if (isBig) "itemCF_coOccurSim_simMatrix_big" else "itemCF_coOccurSim_simMatrix")
-  )
-
-  // 选择的相似度
-  val SIM_MEASURE_CHOICE: String = IMP_COS_SIM
-
-  // 数据集uri
-  val DATA_MONGO_URI: String = (if (isBig) "mongodb://192.168.0.100:27017/movie_recommend_big" else "mongodb://192.168.0.100:27017/movie_recommend")
-
-  // 电影相似度存储uri
-  val SIM_MATRIX_OUTPUT_URI: String = "mongodb://192.168.0.100:27017/spark_output"
-
-  // 推荐结果存储uri
-  val RECOMMEND_OUTPUT_URI: String = (if (isBig) "mongodb://192.168.0.100:27017/spark_output.itemCF_result_big" else "mongodb://192.168.0.100:27017/spark_output.itemCF_result")
-
-  // 并行度
-  val defaultParallelism = 960
-
   def main(args: Array[String]): Unit = {
 
     // 1. 创建sparkSession
+    val uri = OfflineConstant.MONGO_DB_HOST + OfflineConstant.SPARK_MONGO_OUTPUT + "." + OfflineConstant.OFFLINE_RECOMMEND_OUTPUT;
     val sparkSession = SparkSession.builder()
-      .config("spark.mongodb.output.uri", RECOMMEND_OUTPUT_URI)
+      .config("spark.mongodb.output.uri", uri)
       .getOrCreate()
     import sparkSession.implicits._
 
     // 2. 加载相似度矩阵
     val sim = sparkSession.read
       .format("mongo")
-      .option("uri", SIM_MATRIX_OUTPUT_URI)
-      .option("collection", SimMatrix(SIM_MEASURE_CHOICE))
+      .option("uri", OfflineConstant.MONGO_DB_HOST + OfflineConstant.SPARK_MONGO_OUTPUT)
+      .option("collection", OfflineConstant.SIM_MEASURE_MAP(OfflineConstant.SIM_MEASURE_CHOICE))
       .load()
       .as[Similarity]
       .rdd
@@ -77,7 +54,7 @@ object OfflineMovieRecommend {
     // 3. 加载用户主动评分的电影
     val userInterestDF = sparkSession.read
       .format("mongo")
-      .option("uri", DATA_MONGO_URI)
+      .option("uri", OfflineConstant.MONGO_DB_HOST + OfflineConstant.MOVIELENS_COLLECTION_NAME)
       .option("collection", "rated_movies")
       .load()
       .map(row => (row.getAs[Int]("userId"), row.getAs[Int]("movieId"), row.getAs[Double]("rating")))
@@ -95,7 +72,7 @@ object OfflineMovieRecommend {
       .createOrReplaceTempView("tempTable")
 
 
-    // 5. 为每个用户推荐10个电影
+    // 5. 为每个用户推荐电影
     val recommendResultDF: DataFrame = sparkSession.sql(
       """|SELECT userId
          |,  otherItem
@@ -110,13 +87,14 @@ object OfflineMovieRecommend {
       })
       .groupByKey()
       .map {
-        case (userId, iterable) => (userId, iterable.toList.take(10).map(item=>UserRecommendation(item)))
+        case (userId, iterable) =>
+          (userId, iterable.toList.take(OfflineConstant.RECOMMEND_COUNT_PER).map(item => UserRecommendation(item)))
       }
       .toDF("userId", "recommendations")
 
     // 6. 推荐结果写入MongoDB
     import com.mongodb.spark._
-    MongoSpark.save(recommendResultDF)
+    MongoSpark.save(recommendResultDF.write.mode("overwrite"))
 
     sparkSession.stop()
   }
