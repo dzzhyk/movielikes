@@ -3,7 +3,7 @@ package com.yankaizhang.movielikes.recommend.offlineRecommend
 import com.yankaizhang.movielikes.recommend.entity.Similarity
 import org.apache.spark.sql.{DataFrame, SparkSession}
 import org.apache.spark.storage.StorageLevel
-import com.yankaizhang.movielikes.recommend.constant.SimilarityMeasureConstant.{COS_SIM, CO_OCCUR_SIM}
+import com.yankaizhang.movielikes.recommend.constant.SimilarityMeasureConstant.{COS_SIM, IMP_COS_SIM, CO_OCCUR_SIM}
 
 
 /**
@@ -16,11 +16,12 @@ object OfflineMovieRecommend {
 
   val SimMatrix = Map(
     COS_SIM -> (if (isBig) "itemCF_cosSim_simMatrix_big" else "itemCF_cosSim_simMatrix"),
+    IMP_COS_SIM -> (if (isBig) "itemCF_impCosSim_simMatrix_big" else "itemCF_impCosSim_simMatrix"),
     CO_OCCUR_SIM -> (if (isBig) "itemCF_coOccurSim_simMatrix_big" else "itemCF_coOccurSim_simMatrix")
   )
 
   // 选择的相似度
-  val SIM_MEASURE_CHOICE: String = CO_OCCUR_SIM
+  val SIM_MEASURE_CHOICE: String = IMP_COS_SIM
 
   // 数据集uri
   val DATA_MONGO_URI: String = (if (isBig) "mongodb://192.168.0.100:27017/movie_recommend_big" else "mongodb://192.168.0.100:27017/movie_recommend")
@@ -54,24 +55,24 @@ object OfflineMovieRecommend {
       .toDF("movieId1", "movieId2", "similarity")
       .persist(StorageLevel.MEMORY_ONLY_SER)
 
-/*
-db.ratings.aggregate([
-        {$sort : {userId: 1, rating: -1}},
-        {
-            $group : {
-            _id: "$userId",
-            movie_list: {
-                $push: {movieId: "$movieId", rating: "$rating"}}
-            }
-        },
-        {$project: {_id: 0, userId: "$_id", movie_list: {$slice: ["$movie_list", 0, 10]}}},
-        {$unwind: "$movie_list"},
-        {$project: {_id: 0, userId: 1, movieId: "$movie_list.movieId", rating: "$movie_list.rating"}},
-        {$out: "rated_movies"}
-    ],
-    {allowDiskUse: true}
-)
-*/
+    /*
+    db.ratings.aggregate([
+            {$sort : {userId: 1, rating: -1}},
+            {
+                $group : {
+                _id: "$userId",
+                movie_list: {
+                    $push: {movieId: "$movieId", rating: "$rating"}}
+                }
+            },
+            {$project: {_id: 0, userId: "$_id", movie_list: {$slice: ["$movie_list", 0, 10]}}},
+            {$unwind: "$movie_list"},
+            {$project: {_id: 0, userId: 1, movieId: "$movie_list.movieId", rating: "$movie_list.rating"}},
+            {$out: "rated_movies"}
+        ],
+        {allowDiskUse: true}
+    )
+    */
 
     // 3. 加载用户主动评分的电影
     val userInterestDF = sparkSession.read

@@ -19,16 +19,15 @@ object CoOccurSim {
       .config("spark.mongodb.output.uri", SIM_MATRIX_OUTPUT_URI + "." + SimMatrix(SimilarityMeasureConstant.CO_OCCUR_SIM))
       .getOrCreate()
 
+
+    // 2. 加载rating数据
     import sparkSession.implicits._
-    val collectionDF = sparkSession.read
+    val ratingDF: DataFrame = sparkSession.read
       .format("mongo")
       .option("uri", DATA_MONGO_URI)
       .option("collection", "ratings")
       .load()
-      .persist(StorageLevel.MEMORY_ONLY_SER)
-
-    // 2. 加载rating数据
-    val ratingDF: DataFrame = collectionDF
+      .drop("_id")
       .as[Rating]
       .map(entity => (entity.userId, entity.movieId, entity.rating))
       .toDF("userId", "movieId", "rating")

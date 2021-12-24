@@ -2,21 +2,22 @@ package com.yankaizhang.movielikes.recommend.offlineRecommend
 
 import com.yankaizhang.movielikes.recommend.constant.SimilarityMeasureConstant
 import com.yankaizhang.movielikes.recommend.entity.Rating
+import com.yankaizhang.movielikes.recommend.offlineRecommend.OfflineMovieRecommend.{DATA_MONGO_URI, SIM_MATRIX_OUTPUT_URI, SimMatrix, defaultParallelism}
 import com.yankaizhang.movielikes.recommend.util.SimilarityMeasures
 import org.apache.spark.sql.{DataFrame, SparkSession}
 import org.apache.spark.storage.StorageLevel
-import com.yankaizhang.movielikes.recommend.offlineRecommend.OfflineMovieRecommend.{DATA_MONGO_URI, SIM_MATRIX_OUTPUT_URI, SimMatrix, defaultParallelism}
 
 /**
- * 余弦相似度
+ * 改进余弦相似度
+ * 避免头部物品效应，保证推荐几率公平
  */
-object CosSim {
+object ImpCosSim {
 
   def main(args: Array[String]): Unit = {
 
     // 1. 创建sparkSession
     val sparkSession = SparkSession.builder()
-      .config("spark.mongodb.output.uri", SIM_MATRIX_OUTPUT_URI + "." + SimMatrix(SimilarityMeasureConstant.COS_SIM))
+      .config("spark.mongodb.output.uri", SIM_MATRIX_OUTPUT_URI + "." + SimMatrix(SimilarityMeasureConstant.IMP_COS_SIM))
       .getOrCreate()
 
     import sparkSession.implicits._
@@ -43,11 +44,10 @@ object CosSim {
     ratingWithCountDF.join(ratingWithCountDF, "userId")
       .toDF("userId", "movieId1", "rating1", "count1", "movieId2", "rating2", "count2")
       .selectExpr("userId"
-        , "movieId1"
-        , "movieId2"
-        , "rating1 * rating2 as product"
-        , "pow(rating1, 2) as rating1Pow"
-        , "pow(rating2, 2) as rating2Pow")
+        , "movieId1", "movieId2"
+        , "count1", "count2"
+        , "rating1 * rating2 as product", "rating2"
+        , "pow(rating1, 2) as rating1Pow")
       .createOrReplaceTempView("userId_joined")
 
 
@@ -58,7 +58,10 @@ object CosSim {
         |, movieId2
         |, sum(product) as dotProduct
         |, sum(rating1Pow) as  ratingSumOfSq1
-        |, sum(rating2Pow)  as  ratingSumOfSq2
+        |, sum(rating2) as ratingSum2
+        |, count(userId) as size
+        |, first(count1) as count1
+        |, first(count2) as count2
         |FROM userId_joined
         |GROUP BY movieId1, movieId2
       """.stripMargin)
@@ -66,11 +69,14 @@ object CosSim {
       .map(row => {
         val dotProduct = row.getAs[Double](2)
         val ratingSumOfSq1 = row.getAs[Double](3)
-        val ratingSumOfSq2 = row.getAs[Double](4)
+        val ratingSum2 = row.getAs[Double](4)
+        val size = row.getAs[Int](5)
+        val count1 = row.getAs[Int](6)
+        val count2 = row.getAs[Int](7)
 
-        val cosSim = SimilarityMeasures.cosineSimilarity(dotProduct, scala.math.sqrt(ratingSumOfSq1), scala.math.sqrt(ratingSumOfSq2))
+        val impCosSim = SimilarityMeasures.improvedCosineSimilarity(dotProduct, math.sqrt(ratingSumOfSq1), math.sqrt(ratingSum2), size, count1, count2)
 
-        (row.getInt(0), (row.getInt(1), cosSim))
+        (row.getInt(0), (row.getInt(1), impCosSim))
       })
       .rdd
       .groupByKey()
