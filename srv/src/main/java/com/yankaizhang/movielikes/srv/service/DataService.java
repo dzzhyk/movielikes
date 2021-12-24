@@ -20,6 +20,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+@SuppressWarnings("ALL")
 @Service
 public class DataService {
     private final MongoClient mongoClient;
@@ -35,14 +36,16 @@ public class DataService {
     private MongoCollection<Document> averageMoviesScoreCollection;
 
     private MongoCollection<Document> getMovieCollection() {
-        if (null == movieCollection)
+        if (null == movieCollection) {
             movieCollection = mongoClient.getDatabase(CollectionName.MONGODB_INPUT).getCollection(CollectionName.MONGODB_MOVIE_COLLECTION);
+        }
         return movieCollection;
     }
 
     private MongoCollection<Document> getAverageMoviesScoreCollection() {
-        if (null == averageMoviesScoreCollection)
+        if (null == averageMoviesScoreCollection) {
             averageMoviesScoreCollection = mongoClient.getDatabase(CollectionName.MONGODB_DATABASE).getCollection(CollectionName.MONGODB_AVERAGE_MOVIES_SCORE_COLLECTION);
+        }
         return averageMoviesScoreCollection;
     }
 
@@ -68,10 +71,11 @@ public class DataService {
         try {
             movie = objectMapper.readValue(JSON.serialize(document), Movie.class);
             Document score = getAverageMoviesScoreCollection().find(Filters.eq("movieId", movie.getMovieId())).first();
-            if (null == score || score.isEmpty())
+            if (null == score || score.isEmpty()) {
                 movie.setScore(0D);
-            else
+            } else {
                 movie.setScore(score.get("avg", 0D));
+            }
         } catch (IOException e) {
             e.printStackTrace();
         }
