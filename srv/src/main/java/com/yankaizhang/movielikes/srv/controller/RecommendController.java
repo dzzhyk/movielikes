@@ -36,8 +36,8 @@ public class RecommendController {
 
     @GetMapping("/user")
     @ResponseBody
-    public List<Movie> getUserRecommendMovies() {
-        return dataService.userRecommend(105608);
+    public List<Movie> getUserRecommendMovies(Integer userId) {
+        return dataService.userRecommend(userId);
     }
 
 
