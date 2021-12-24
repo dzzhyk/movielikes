@@ -118,18 +118,18 @@ public class DataService {
         return recommendations.subList(0, Math.min(maxItems, recommendations.size()));
     }
 
-    public List<Recommendation> getTopGenresRecommendations(TopGenresRecommendation topGenresRecommendation){
+    public List<Recommendation> getTopGenresRecommendations(TopGenresRecommendation topGenresRecommendation) {
         Document genresTopMovies = mongoClient.getDatabase(CollectionName.MONGODB_DATABASE).getCollection(CollectionName.MONGODB_GENRES_TOP_MOVIES_COLLECTION)
-                .find(Filters.eq("genres",topGenresRecommendation.getGenres())).first();
-        return exchange(genresTopMovies,topGenresRecommendation.getSum());
+                .find(Filters.eq("genres", topGenresRecommendation.getGenres())).first();
+        return exchange(genresTopMovies, topGenresRecommendation.getSum());
     }
 
     public List<Movie> userRecommend(Integer userId) {
-        Document document =mongoClient.getDatabase(CollectionName.MONGODB_DATABASE).getCollection(CollectionName.MONGODB_ITEMCF_RESULT_BIG)
-                .find(Filters.eq("userId",userId)).first();
-        List<Integer>recommendations = new ArrayList<>();
-        ArrayList<Document> recs=document.get("recommendations", ArrayList.class);
-        for(Document rec: recs) {
+        Document document = mongoClient.getDatabase(CollectionName.MONGODB_DATABASE).getCollection(CollectionName.MONGODB_ITEMCF_RESULT_BIG)
+                .find(Filters.eq("userId", userId)).first();
+        List<Integer> recommendations = new ArrayList<>();
+        ArrayList<Document> recs = document.get("recommendations", ArrayList.class);
+        for (Document rec : recs) {
             recommendations.add(rec.getInteger("movieId"));
         }
 
