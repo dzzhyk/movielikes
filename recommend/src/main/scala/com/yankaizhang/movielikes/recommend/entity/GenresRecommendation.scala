@@ -7,4 +7,4 @@ package com.yankaizhang.movielikes.recommend.entity
  * @param genres 电影类别
  * @param recs   top10的电影集合
  */
-case class GenresRecommendation(genres: String, recs: Seq[Recommendation])
+case class GenresRecommendation(comedy: String, recs: Seq[Recommendation])

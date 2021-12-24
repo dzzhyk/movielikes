@@ -1,6 +1,6 @@
 package com.yankaizhang.movielikes.recommend.offlineRecommend
 
-import com.yankaizhang.movielikes.recommend.entity.Similarity
+import com.yankaizhang.movielikes.recommend.entity.{Similarity, UserRecommendation}
 import org.apache.spark.sql.{DataFrame, SparkSession}
 import org.apache.spark.storage.StorageLevel
 import com.yankaizhang.movielikes.recommend.constant.SimilarityMeasureConstant.{COS_SIM, IMP_COS_SIM, CO_OCCUR_SIM}
@@ -33,7 +33,7 @@ object OfflineMovieRecommend {
   val RECOMMEND_OUTPUT_URI: String = (if (isBig) "mongodb://192.168.0.100:27017/spark_output.itemCF_result_big" else "mongodb://192.168.0.100:27017/spark_output.itemCF_result")
 
   // 并行度
-  val defaultParallelism = 20
+  val defaultParallelism = 960
 
   def main(args: Array[String]): Unit = {
 
@@ -110,7 +110,7 @@ object OfflineMovieRecommend {
       })
       .groupByKey()
       .map {
-        case (userId, iterable) => (userId, iterable.toList.take(10))
+        case (userId, iterable) => (userId, iterable.toList.take(10).map(item=>UserRecommendation(item)))
       }
       .toDF("userId", "recommendations")
 
