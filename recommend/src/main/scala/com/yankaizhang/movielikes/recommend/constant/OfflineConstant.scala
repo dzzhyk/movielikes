@@ -8,7 +8,7 @@ import com.yankaizhang.movielikes.recommend.constant.SimilarityMeasureConstant.{
 object OfflineConstant {
 
   // 是否为大数据
-  val BIG_DATA: Boolean = false
+  val BIG_DATA: Boolean = true
   // 预测相似度
   val SIM_MEASURE_CHOICE: String = IMP_COS_SIM
   // MongoDB连接

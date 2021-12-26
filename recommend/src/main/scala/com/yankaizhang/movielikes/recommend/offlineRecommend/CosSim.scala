@@ -19,7 +19,7 @@ object CosSim {
     val sparkSession = SparkSession.builder()
       .config("spark.mongodb.output.uri", uri)
       .getOrCreate()
-
+    sparkSession.sparkContext.setLogLevel("WARN")
     import sparkSession.implicits._
 
     // 2. 加载rating数据

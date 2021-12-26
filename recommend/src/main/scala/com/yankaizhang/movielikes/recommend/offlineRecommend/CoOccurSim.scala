@@ -19,7 +19,7 @@ object CoOccurSim {
     val sparkSession = SparkSession.builder()
       .config("spark.mongodb.output.uri", uri)
       .getOrCreate()
-
+    sparkSession.sparkContext.setLogLevel("WARN")
 
     // 2. 加载rating数据
     import sparkSession.implicits._

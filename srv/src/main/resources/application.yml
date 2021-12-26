@@ -4,6 +4,6 @@ server:
 
 spring:
   application:
-    name: boot-spark
+    name: movielikes-srv
   profiles:
     active: dev

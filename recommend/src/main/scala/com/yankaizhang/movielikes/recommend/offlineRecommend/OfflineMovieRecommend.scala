@@ -18,6 +18,7 @@ object OfflineMovieRecommend {
     val sparkSession = SparkSession.builder()
       .config("spark.mongodb.output.uri", uri)
       .getOrCreate()
+    sparkSession.sparkContext.setLogLevel("WARN")
     import sparkSession.implicits._
 
     // 2. 加载相似度矩阵
