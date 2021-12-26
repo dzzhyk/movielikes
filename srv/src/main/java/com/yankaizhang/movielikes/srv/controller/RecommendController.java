@@ -6,14 +6,16 @@ import com.yankaizhang.movielikes.srv.service.DataService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
 @Api("电影推荐接口")
 @RequestMapping("/recommend")
-@Controller
+@RestController
 public class RecommendController {
 
     private final DataService dataService;
@@ -25,7 +27,6 @@ public class RecommendController {
 
     @ApiOperation("获取热门电影榜单")
     @GetMapping("/hot")
-    @ResponseBody
     public List<Movie> getHotMovies() {
         List<Recommendation> recommendations = dataService.getHotRecommendations(5);
         return dataService.getRecommendMovies(recommendations);
@@ -33,18 +34,15 @@ public class RecommendController {
 
     @ApiOperation("评分最多电影榜单")
     @GetMapping("/rate")
-    @ResponseBody
     public List<Movie> getRateMoreMovies() {
         List<Recommendation> recommendations = dataService.getRateMoreRecommendations(5);
         return dataService.getRecommendMovies(recommendations);
     }
 
     @ApiOperation("用户个性推荐榜单")
-    @GetMapping("/user")
-    @ResponseBody
-    public List<Movie> getUserRecommendMovies(Integer userId) {
+    @GetMapping("/user/{uid}")
+    public List<Movie> getUserRecommendMovies(@PathVariable("uid") Integer userId) {
         return dataService.getUserRecommend(userId);
     }
-
 
 }
