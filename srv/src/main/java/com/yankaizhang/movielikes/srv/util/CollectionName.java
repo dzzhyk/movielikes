@@ -2,6 +2,7 @@ package com.yankaizhang.movielikes.srv.util;
 
 public class CollectionName {
 
+    public static final String MONGO_USER_COLLECTION = "User";
     public static String MONGODB_DATABASE = "movie-recommend";
 
     public static String MONGODB_MOVIE_COLLECTION = "Movie";
