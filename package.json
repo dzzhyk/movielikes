@@ -1,5 +1,5 @@
 {
-  "name": "moviellike-frontend",
+  "name": "movielike-frontend",
   "version": "0.1.0",
   "private": true,
   "scripts": {
@@ -9,7 +9,13 @@
   },
   "dependencies": {
     "core-js": "^3.6.5",
-    "vue": "^2.6.11"
+    "element-plus": "^1.2.0-beta.6",
+    "vue": "^3.2.12",
+    "vue-router": "^4.0.11",
+    "vuex": "^4.0.2",
+    "sass-loader": "^8.0.0",
+    "webpack": "5.0.0",
+    "vant": "^3.2.3"
   },
   "devDependencies": {
     "@vue/cli-plugin-babel": "~4.5.0",
@@ -18,6 +24,13 @@
     "babel-eslint": "^10.1.0",
     "eslint": "^6.7.2",
     "eslint-plugin-vue": "^6.2.2",
+    "less": "^4.1.2",
+    "less-loader": "^10.2.0",
+    "node-sass": "^7.0.1",
+    "sass": "^1.45.1",
+    "sass-loader": "^8.0.0",
+    "style-resources-loader": "^1.4.1",
+    "vue-cli-plugin-style-resources-loader": "~0.1.5",
     "vue-template-compiler": "^2.6.11"
   },
   "eslintConfig": {
