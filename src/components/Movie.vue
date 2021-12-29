@@ -1,42 +1,47 @@
 <template>
   <div class="container">
     <div class="leftText">
-       <div>
-         电影名称
-       </div>
-      <div>
-        电影分类
-      </div>
-      <div>
-        电影评分
-      </div>
+       <p>
+         {{this.movieName}}
+       </p>
+      <p>
+        {{this.movieCategory}}
+      </p>
+      <p>
+        {{this.movieScore}}
+      </p>
+      <slot></slot>
     </div>
   </div>
 </template>
 
 <script>
 export default {
-  name: "Movie"
+  name: "Movie",
+  props: {
+    movieName:String,
+    movieCategory: String,
+    movieScore: String
+  }
 }
 </script>
 
 <style scoped>
 .container {
-  display: flex;
-  align-items: center;
+  float: left;
+  text-align: left;
   justify-content: space-between;
   box-shadow: 0 0 3px 1px #ececec;
-  margin: 16px;
+  margin: 5px;
   border-radius: 12px;
-  padding: 8px 20px 8px 12px;
+  padding: 4px 6px 4px 6px;
   elevation: 1deg;
   width: 150px;
-  height: 300px;
+  height: 260px;
 }
 
 .leftText {
-  width: 80%;
-  display: flex;
+  width: 100%;
   flex-direction: column;
 }
 

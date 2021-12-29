@@ -18,31 +18,41 @@
       </el-row>
     </el-header>
     <el-main>
-      <div style="display: inline-block;margin-left: 10px;margin-top: 10px">
-     <movie>
-
+      <div style="float: left">
+      <div style="font-size: 30px">
+         历史热门
+      </div>
+      <div v-for="count in 10" style="display: inline-block;margin-left: 10px;margin-top: 10px;float:left;" :key="count">
+     <movie movie-category="电影分类：Comedy" movie-name="电影名称：GTA5" movie-score="电影评分：5.0">
+       {{count}}
      </movie>
       </div>
-      <div style="display: inline-block;margin-left: 10px;margin-top: 10px">
-        <movie>
-
-        </movie>
       </div>
-      <div style="display: inline-block;margin-left: 10px;margin-top: 10px">
-        <movie>
 
-        </movie>
+      <div style="float: left">
+        <div style="font-size: 30px">
+          最近热门
+        </div>
+        <div v-for="count in 10" style="display: inline-block;margin-left: 10px;margin-top: 10px;float:left;" :key="count">
+          <movie movie-category="电影分类：Comedy" movie-name="电影名称：GTA5" movie-score="电影评分：5.0">
+            {{count}}
+          </movie>
+        </div>
       </div>
-      <div style="display: inline-block;margin-left: 10px;margin-top: 10px">
-        <movie>
 
-        </movie>
+      <div style="float: left">
+        <div style="font-size: 30px">
+          为你推荐
+        </div>
+        <div v-for="count in 10" style="display: inline-block;margin-left: 10px;margin-top: 10px;float:left;" :key="count">
+          <movie movie-category="电影分类：Comedy" movie-name="电影名称：GTA5" movie-score="电影评分：5.0">
+            {{count}}
+          </movie>
+        </div>
       </div>
-      <div style="display: inline-block;margin-left: 10px;margin-top: 10px">
-        <movie>
 
-        </movie>
-      </div>
+
+
     </el-main>
   </el-container>
 </template>
