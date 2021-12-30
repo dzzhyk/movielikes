@@ -9,13 +9,19 @@ spring:
     mongodb:
       host: 127.0.0.1
       port: 27017
+  thymeleaf:
+    mode: HTML
+    encoding: utf-8
+    cache: false
+  devtools:
+    restart:
+      enabled: true
 
-
-#mybatis-plus:
-#  mapper-locations: classpath*:mapper/**/*Mapper.xml
-#  type-aliases-package: com.yankaizhang.bootspark.entity
-#  configuration:
-#    map-underscore-to-camel-case: true
+mybatis-plus:
+  mapper-locations: classpath*:mapper/**/*Mapper.xml
+  type-aliases-package: com.yankaizhang.movielikes.srv.entity
+  configuration:
+    map-underscore-to-camel-case: true
 
 server:
   error:

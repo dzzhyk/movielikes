@@ -1,6 +1,6 @@
 package com.yankaizhang.movielikes.srv.constant;
 
-public class MongoConstant {
+public class MongoConstants {
 
     public static String MONGODB_INPUT = "movie_recommend_big";
 

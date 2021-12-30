@@ -34,6 +34,12 @@
         <mongo-spark.version>3.0.1</mongo-spark.version>
         <janino.version>3.0.8</janino.version>
         <swagger.version>3.0.0</swagger.version>
+        <kaptcha.version>2.3.2</kaptcha.version>
+        <oshi.version>5.8.6</oshi.version>
+        <jwt.version>0.9.1</jwt.version>
+        <commons.io.version>2.11.0</commons.io.version>
+        <commons.fileupload.version>1.4</commons.fileupload.version>
+        <bitwalker.version>1.21</bitwalker.version>
     </properties>
 
     <repositories>
