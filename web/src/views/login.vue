@@ -40,7 +40,7 @@
                     <span v-else>登 录 中...</span>
                 </el-button>
                 <div style="float: right" v-if="register">
-                    <router-link class="link-type" :to="'/register'">立即注册</router-link>
+                    <router-link class="link-type" :to="'/register'">还没有账号? 点击注册</router-link>
                 </div>
             </el-form-item>
         </el-form>
@@ -59,8 +59,8 @@ const router = useRouter();
 const { proxy } = getCurrentInstance();
 
 const loginForm = ref({
-    username: "admin",
-    password: "admin123",
+    username: "",
+    password: "",
     code: "",
     uuid: "",
 });
