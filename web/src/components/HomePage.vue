@@ -18,6 +18,14 @@
       </el-row>
     </el-header>
     <el-main style="margin-left: 100px;margin-right: 50px;">
+      <el-row style="margin-left: 5px">
+        <el-col :span="22">
+      <el-input  placeholder="Search" />
+        </el-col>
+        <el-col :span="2" style="float: left">
+      <el-button :icon="Search" circle></el-button>
+        </el-col>
+      </el-row>
       <div style="float: left">
       <div style="font-size: 30px">
          历史热门
@@ -59,10 +67,15 @@
 
 <script>
 import Movie from "@/components/Movie";
-
+import {Search} from "@element-plus/icons-vue";
 export default {
   name: "HomePage",
   components: {Movie},
+  data() {
+    return {
+      Search
+    }
+  },
   methods:{
     login() {
       this.$router.push("/login");
