@@ -2,7 +2,7 @@ package com.yankaizhang.movielikes.srv.security;
 
 /**
  * 用户登录对象
- * 
+ *
  * @author ruoyi
  */
 public class LoginBody

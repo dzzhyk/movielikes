@@ -7,6 +7,7 @@ import com.yankaizhang.movielikes.srv.security.LoginUser;
 import com.yankaizhang.movielikes.srv.security.service.TokenService;
 import com.yankaizhang.movielikes.srv.util.ServletUtils;
 import com.yankaizhang.movielikes.srv.util.StringUtils;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.core.Authentication;
@@ -22,6 +23,7 @@ import java.io.IOException;
  *
  * @author ruoyi
  */
+@Slf4j
 @Configuration
 public class LogoutSuccessHandlerImpl implements LogoutSuccessHandler {
     @Autowired
@@ -37,9 +39,11 @@ public class LogoutSuccessHandlerImpl implements LogoutSuccessHandler {
     public void onLogoutSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication)
             throws IOException {
         LoginUser loginUser = tokenService.getLoginUser(request);
+        log.info(String.valueOf(loginUser));
         if (StringUtils.isNotNull(loginUser)) {
             // 删除用户缓存记录
             tokenService.delLoginUser(loginUser.getToken());
+            log.info("删除用户缓存记录");
         }
         ServletUtils.renderString(response, objectMapper.writeValueAsString(AjaxResult.error(HttpStatus.SUCCESS, "退出成功")));
     }

@@ -11,6 +11,7 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
  * @author dzzhyk
  * @since 2021-12-28
  */
+
 public interface SysMovieMapper extends BaseMapper<SysMovie> {
 
 }

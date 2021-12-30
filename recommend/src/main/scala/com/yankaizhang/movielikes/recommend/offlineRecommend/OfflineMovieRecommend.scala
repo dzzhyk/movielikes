@@ -1,6 +1,6 @@
 package com.yankaizhang.movielikes.recommend.offlineRecommend
 
-import com.yankaizhang.movielikes.recommend.constant.OfflineConstant
+import com.yankaizhang.movielikes.recommend.constant.OfflineConstants
 import com.yankaizhang.movielikes.recommend.entity.{Similarity, UserRecommendation}
 import org.apache.spark.sql.{DataFrame, SparkSession}
 import org.apache.spark.storage.StorageLevel
@@ -14,7 +14,7 @@ object OfflineMovieRecommend {
   def main(args: Array[String]): Unit = {
 
     // 1. 创建sparkSession
-    val uri = OfflineConstant.MONGO_DB_HOST + OfflineConstant.SPARK_MONGO_OUTPUT + "." + OfflineConstant.OFFLINE_RECOMMEND_OUTPUT;
+    val uri = OfflineConstants.MONGO_DB_HOST + OfflineConstants.SPARK_MONGO_OUTPUT + "." + OfflineConstants.OFFLINE_RECOMMEND_OUTPUT;
     val sparkSession = SparkSession.builder()
       .config("spark.mongodb.output.uri", uri)
       .getOrCreate()
@@ -24,8 +24,8 @@ object OfflineMovieRecommend {
     // 2. 加载相似度矩阵
     val sim = sparkSession.read
       .format("mongo")
-      .option("uri", OfflineConstant.MONGO_DB_HOST + OfflineConstant.SPARK_MONGO_OUTPUT)
-      .option("collection", OfflineConstant.SIM_MEASURE_MAP(OfflineConstant.SIM_MEASURE_CHOICE))
+      .option("uri", OfflineConstants.MONGO_DB_HOST + OfflineConstants.SPARK_MONGO_OUTPUT)
+      .option("collection", OfflineConstants.SIM_MEASURE_MAP(OfflineConstants.SIM_MEASURE_CHOICE))
       .load()
       .as[Similarity]
       .rdd
@@ -55,7 +55,7 @@ object OfflineMovieRecommend {
     // 3. 加载用户主动评分的电影
     val userInterestDF = sparkSession.read
       .format("mongo")
-      .option("uri", OfflineConstant.MONGO_DB_HOST + OfflineConstant.MOVIELENS_COLLECTION_NAME)
+      .option("uri", OfflineConstants.MONGO_DB_HOST + OfflineConstants.MOVIELENS_COLLECTION_NAME)
       .option("collection", "rated_movies")
       .load()
       .map(row => (row.getAs[Int]("userId"), row.getAs[Int]("movieId"), row.getAs[Double]("rating")))
@@ -89,7 +89,7 @@ object OfflineMovieRecommend {
       .groupByKey()
       .map {
         case (userId, iterable) =>
-          (userId, iterable.toList.take(OfflineConstant.RECOMMEND_COUNT_PER).map(item => UserRecommendation(item)))
+          (userId, iterable.toList.take(OfflineConstants.RECOMMEND_COUNT_PER).map(item => UserRecommendation(item)))
       }
       .toDF("userId", "recommendations")
 

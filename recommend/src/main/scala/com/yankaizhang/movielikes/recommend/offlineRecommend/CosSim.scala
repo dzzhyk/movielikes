@@ -1,11 +1,11 @@
 package com.yankaizhang.movielikes.recommend.offlineRecommend
 
-import com.yankaizhang.movielikes.recommend.constant.SimilarityMeasureConstant
+import com.yankaizhang.movielikes.recommend.constant.SimilarityMeasureConstants
 import com.yankaizhang.movielikes.recommend.entity.Rating
 import com.yankaizhang.movielikes.recommend.util.SimilarityMeasures
 import org.apache.spark.sql.{DataFrame, SparkSession}
 import org.apache.spark.storage.StorageLevel
-import com.yankaizhang.movielikes.recommend.constant.OfflineConstant
+import com.yankaizhang.movielikes.recommend.constant.OfflineConstants
 
 /**
  * 余弦相似度
@@ -15,7 +15,7 @@ object CosSim {
   def main(args: Array[String]): Unit = {
 
     // 1. 创建sparkSession
-    val uri = OfflineConstant.MONGO_DB_HOST + OfflineConstant.SPARK_MONGO_OUTPUT + "." + OfflineConstant.SIM_MEASURE_MAP(SimilarityMeasureConstant.COS_SIM)
+    val uri = OfflineConstants.MONGO_DB_HOST + OfflineConstants.SPARK_MONGO_OUTPUT + "." + OfflineConstants.SIM_MEASURE_MAP(SimilarityMeasureConstants.COS_SIM)
     val sparkSession = SparkSession.builder()
       .config("spark.mongodb.output.uri", uri)
       .getOrCreate()
@@ -25,7 +25,7 @@ object CosSim {
     // 2. 加载rating数据
     val ratingDF: DataFrame = sparkSession.read
       .format("mongo")
-      .option("uri", OfflineConstant.MONGO_DB_HOST + OfflineConstant.MOVIELENS_COLLECTION_NAME)
+      .option("uri", OfflineConstants.MONGO_DB_HOST + OfflineConstants.MOVIELENS_COLLECTION_NAME)
       .option("collection", "ratings")
       .load()
       .drop("_id")
@@ -63,7 +63,7 @@ object CosSim {
         |FROM userId_joined
         |GROUP BY movieId1, movieId2
       """.stripMargin)
-      .coalesce(OfflineConstant.DEFAULT_PARALLELISM)
+      .coalesce(OfflineConstants.DEFAULT_PARALLELISM)
       .map(row => {
         val dotProduct = row.getAs[Double](2)
         val ratingSumOfSq1 = row.getAs[Double](3)
@@ -78,7 +78,7 @@ object CosSim {
       .mapPartitions(part => {
         part.map {
           case (movieId, recs) =>
-            (movieId, recs.toList.filter(x => x._1 != movieId).sortWith(_._2 > _._2).map(x => (x._1, x._2)).take(OfflineConstant.SIM_MOVIE_PER))
+            (movieId, recs.toList.filter(x => x._1 != movieId).sortWith(_._2 > _._2).map(x => (x._1, x._2)).take(OfflineConstants.SIM_MOVIE_PER))
         }
       })
       .flatMapValues(value => value)

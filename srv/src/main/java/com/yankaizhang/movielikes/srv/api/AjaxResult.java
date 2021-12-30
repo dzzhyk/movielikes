@@ -7,7 +7,7 @@ import com.yankaizhang.movielikes.srv.util.StringUtils;
 import java.util.HashMap;
 
 /**
- * 操作消息提醒
+ * json响应体
  * 
  * @author ruoyi
  */

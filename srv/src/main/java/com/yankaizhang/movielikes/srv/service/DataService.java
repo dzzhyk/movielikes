@@ -1,20 +1,18 @@
 package com.yankaizhang.movielikes.srv.service;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.model.Filters;
 import com.mongodb.client.model.Sorts;
 import com.mongodb.util.JSON;
+import com.yankaizhang.movielikes.srv.constant.MongoConstants;
 import com.yankaizhang.movielikes.srv.entity.Movie;
 import com.yankaizhang.movielikes.srv.entity.Recommendation;
-import com.yankaizhang.movielikes.srv.entity.TopGenresRecommendation;
 import org.bson.Document;
 import org.springframework.beans.factory.annotation.Autowired;
-import com.yankaizhang.movielikes.srv.constant.MongoConstants;
 import org.springframework.stereotype.Service;
-import com.fasterxml.jackson.databind.ObjectMapper;
-
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -106,25 +104,6 @@ public class DataService {
         }
 
         return recommendations;
-    }
-
-    private List<Recommendation> exchange(Document document, int maxItems) {
-        List<Recommendation> recommendations = new ArrayList<>();
-        if (null == document || document.isEmpty())
-            return recommendations;
-        ArrayList<Document> recs = document.get("recs", ArrayList.class);
-        for (Document recDoc : recs) {
-            recommendations.add(new Recommendation(recDoc.getInteger("movieId"), recDoc.getDouble("score")));
-        }
-
-        recommendations.sort((o1, o2) -> o1.getScore() > o2.getScore() ? -1 : 1);
-        return recommendations.subList(0, Math.min(maxItems, recommendations.size()));
-    }
-
-    public List<Recommendation> getTopGenresRecommendations(TopGenresRecommendation topGenresRecommendation) {
-        Document genresTopMovies = mongoClient.getDatabase(MongoConstants.MONGODB_DATABASE).getCollection(MongoConstants.MONGODB_GENRES_TOP_MOVIES_COLLECTION)
-                .find(Filters.eq("genres", topGenresRecommendation.getGenres())).first();
-        return exchange(genresTopMovies, topGenresRecommendation.getSum());
     }
 
     public List<Movie> getUserRecommend(Integer userId) {
