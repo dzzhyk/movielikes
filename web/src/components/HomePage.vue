@@ -16,7 +16,15 @@
         </el-header>
 
         <el-main style="display: flex; flex-direction: column">
-            <div style="font-size: 30px">历史热门</div>
+          <el-row style="margin-left: 5px">
+            <el-col :span="22">
+              <el-input  placeholder="Search" />
+            </el-col>
+            <el-col :span="2" style="float: left">
+              <el-button :icon="Search" circle></el-button>
+            </el-col>
+          </el-row>
+          <div style="font-size: 30px">历史热门</div>
 
             <div style="display: flex; justify-content: center; flex-wrap: wrap">
                 <div v-for="count in 10" :key="count">
@@ -62,19 +70,24 @@
 
 <script>
 import Movie from "@/components/Movie";
-
+import {Search} from "@element-plus/icons-vue";
 export default {
-    name: "HomePage",
-    components: { Movie },
-    methods: {
-        login() {
-            this.$router.push("/login");
-        },
-        register() {
-            this.$router.push("/register");
-        },
+  name: "HomePage",
+  components: {Movie},
+  data() {
+    return {
+      Search
+    }
+  },
+  methods:{
+    login() {
+      this.$router.push("/login");
     },
-};
+    register() {
+      this.$router.push("/register");
+    }
+  }
+}
 </script>
 
 <style lang="scss">
