@@ -17,7 +17,7 @@
         </el-col>
       </el-row>
     </el-header>
-    <el-main>
+    <el-main style="margin-left: 100px;margin-right: 50px;">
       <div style="float: left">
       <div style="font-size: 30px">
          历史热门
