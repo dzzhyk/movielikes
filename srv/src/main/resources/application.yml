@@ -1,0 +1,9 @@
+server:
+  port: 8080
+
+
+spring:
+  application:
+    name: movielikes-srv
+  profiles:
+    active: dev
