@@ -12,9 +12,9 @@ object OfflineConstants {
   // 预测相似度
   val SIM_MEASURE_CHOICE: String = IMP_COS_SIM
   // MongoDB连接
-  val MONGO_DB_HOST: String = "mongodb://192.168.0.100:27017/"
+  val MONGO_DB_HOST: String = "mongodb://127.0.0.1:27017/"
   // 使用的ratings数据collectionName
-  val MOVIELENS_COLLECTION_NAME: String = (if(BIG_DATA) "movie_recommend_big" else "movie_recommend")
+  val MOVIELENS_COLLECTION_NAME: String = (if (BIG_DATA) "movie_recommend_big" else "movie_recommend")
   // spark输出目录dbName
   val SPARK_MONGO_OUTPUT: String = "spark_output"
   // 相似度计算结果collectionName

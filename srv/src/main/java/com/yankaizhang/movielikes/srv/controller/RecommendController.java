@@ -1,8 +1,8 @@
 package com.yankaizhang.movielikes.srv.controller;
 
-import com.yankaizhang.movielikes.srv.entity.Movie;
-import com.yankaizhang.movielikes.srv.entity.Recommendation;
-import com.yankaizhang.movielikes.srv.service.DataService;
+import com.yankaizhang.movielikes.srv.api.AjaxResult;
+import com.yankaizhang.movielikes.srv.entity.vo.MovieVO;
+import com.yankaizhang.movielikes.srv.service.IRecommendService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,38 +14,34 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 /**
- * @author dzzhyk
+ * 电影推荐接口
  */
 @Api("电影推荐接口")
 @RequestMapping("/recommend")
 @RestController
 public class RecommendController {
 
-    private final DataService dataService;
-
     @Autowired
-    public RecommendController(DataService dataService) {
-        this.dataService = dataService;
+    private IRecommendService recommendService;
+
+    @ApiOperation("评分最多电影")
+    @GetMapping("/most")
+    public AjaxResult getMostRated() {
+        return AjaxResult.success(recommendService.getMostRated());
     }
 
-    @ApiOperation("历史热门推荐")
-    @GetMapping("/hot")
-    public List<Movie> getHotMovies() {
-        List<Recommendation> recommendations = dataService.getHotRecommendations(5);
-        return dataService.getRecommendMovies(recommendations);
+    @ApiOperation("最近热门电影")
+    @GetMapping("/rank")
+    public AjaxResult getRecentlyHot() {
+        return AjaxResult.success(recommendService.getMostRatedRecently());
     }
 
-    @ApiOperation("最新趋势推荐")
-    @GetMapping("/rate")
-    public List<Movie> getRateMoreMovies() {
-        List<Recommendation> recommendations = dataService.getRateMoreRecommendations(5);
-        return dataService.getRecommendMovies(recommendations);
-    }
 
     @ApiOperation("用户个性推荐")
     @GetMapping("/user/{uid}")
-    public List<Movie> getUserRecommendMovies(@PathVariable("uid") Integer userId) {
-        return dataService.getUserRecommend(userId);
+    public AjaxResult getUserRecommend(@PathVariable("uid") Long userId) {
+        List<MovieVO> userRecommend = recommendService.getUserRecommend(userId);
+        return AjaxResult.success(userRecommend);
     }
 
 }

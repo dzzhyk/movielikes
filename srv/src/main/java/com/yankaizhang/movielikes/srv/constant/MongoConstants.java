@@ -12,13 +12,15 @@ public class MongoConstants {
 
     public static String MONGODB_TAG_COLLECTION = "tags";
 
-    public static String MONGODB_AVERAGE_MOVIES_SCORE_COLLECTION = "AverageMovies";
+    public static String MONGODB_AVERAGE_MOVIES_COLLECTION = "AverageMovies";
+
+    public static String MONGODB_GENRES_TOP_MOVIES_COLLECTION = "GenresTopMovies";
 
     public static String MONGODB_RATE_MORE_MOVIES_COLLECTION = "RateMoreMovies";
 
     public static String MONGODB_RATE_MORE_MOVIES_RECENTLY_COLLECTION = "RateMoreRecentlyMovies";
 
-    public static String MONGODB_GENRES_TOP_MOVIES_COLLECTION = "GenresTopMovies";
+    public static String MONGODB_ITEMCF_SIM_MATRIX_COLLECTION = "itemCF_impCosSim_simMatrix_big";
 
     public static String MONGODB_ITEMCF_RESULT_BIG = "itemCF_result_big";
 

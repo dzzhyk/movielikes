@@ -2,8 +2,7 @@ package com.yankaizhang.movielikes.recommend.staticRecommend
 
 import java.text.SimpleDateFormat
 import java.util.Date
-import com.yankaizhang.movielikes.recommend.entity.{GenresRecommendation, Movie, Rating, Recommendation, UserComedyTable}
-
+import com.yankaizhang.movielikes.recommend.entity.{Movie, Rating}
 import com.yankaizhang.movielikes.recommend.util.MongoDBUtil
 import org.apache.spark.sql.SparkSession
 
@@ -19,8 +18,9 @@ object StaticMovieRecommend {
   val RATE_MORE_MOVIES = "RateMoreMovies"
   val RATE_MORE_RECENTLY_MOVIES = "RateMoreRecentlyMovies"
   val AVERAGE_MOVIES = "AverageMovies"
-  val GENRES_TOP_MOVIES = "GenresTopMovies"
-  val AVERAGE_COMEDY = "AverageComedy"
+
+//  val GENRES_TOP_MOVIES = "GenresTopMovies"
+//  val AVERAGE_COMEDY = "AverageComedy"
 
   def main(args: Array[String]): Unit = {
 
@@ -61,58 +61,6 @@ object StaticMovieRecommend {
     val averageMoviesDF = spark.sql("select movieId, avg(rating) as avg from ratings group by movieId")
     MongoDBUtil.storeDFInMongoDB(averageMoviesDF, AVERAGE_MOVIES)
 
-
-    // 4. 统计每种类别top10
-    val movieWithScore = movieDF.join(averageMoviesDF, Seq("movieId"))
-    val comedy = List("Action", "Adventure", "Animation", "Children","Comedy", "Crime", "Documentary", "Drama", "Fantasy", "Film-Noir", "Horror", "IMAX", "Musical","Mystery", "Romance", "Sci-Fi", "Thriller", "War", "Western")
-    val genresRDD = spark.sparkContext.makeRDD(comedy)
-
-    val genresTopMovies = genresRDD.cartesian(movieWithScore.rdd)
-      .filter {
-        case (genres, row) =>
-          row.getAs[String]("genres").toLowerCase.contains(genres.toLowerCase)
-      }
-      .map {
-        case (genres, row) =>
-          (genres, ((row.getAs[Int]("movieId")), row.getAs[Double]("avg")))
-      }.groupByKey()
-      .map {
-        case (genres, items) =>
-          GenresRecommendation(genres, items.toList.sortWith(_._2 > _._2)
-            .take(MOST_SCORE_OF_NUMBER).map(item => Recommendation(item._1, item._2)))
-      }.toDF()
-
-    MongoDBUtil.storeDFInMongoDB(genresTopMovies, GENRES_TOP_MOVIES)
-
-    //rating join movie->  aa: userId,movieId,rating,timestamp,title,genres
-    //comedy 笛卡尔积aa + filter+ map-> bb: comedy,userId,movieId,rating,yearmonth,title,genres
-    //cc: select userId,comedy,avg(Degree(yearmonth,rating)) as comedyScore from bb group by userId,comedy
-    //cc join bb(comedy,userID) -> dd: comedy,userId,comedyScore,movieId,rating,yearmonth,title,genres
-    //dd join genresTopMovies.rdd ->ee: comedy,userId,comedyScore,movieId,rating,yearmonth,title,genres,recs
-
-    /*
-        spark.udf.register("Degree",(yearMonth:Int,rating:Double)=>{
-          val now=new Date()
-          val timeDifference=simpleDateFormat.format(now).toInt-yearMonth
-          (math.E-math.log((timeDifference/20)+1)+1)/2+rating
-        })
-        //rating join movie -> aa: userId,movieId,rating,timestamp,title,genres
-        val aaDF=ratingDF.join(movieDF,Seq("movieId"))
-        val bbDF = genresRDD.cartesian(aaDF.rdd).filter{
-          case (comedy, row) => {
-            row.getAs[String]("genres").toLowerCase.contains(comedy.toLowerCase)
-          }
-        }.map{
-          case (comedy, row) => {
-            val x=row.getAs[Int]("timestamp")
-            val yearmonth=simpleDateFormat.format(new Date(x * 1000L)).toInt
-            UserComedyTable(row.getAs[Int]("userId"),comedy,row.getAs[Double]("rating"),yearmonth)
-          }
-        }.toDF()
-        bbDF.createOrReplaceTempView("bb")
-        val ccDF=spark.sql("select userId,comedy,avg(Degree(yearmonth,rating)) as comedyScore from bb group by userId,comedy")
-        MongoDBUtil.storeDFInMongoDB(ccDF, AVERAGE_COMEDY)
-     */
     spark.stop()
   }
 }

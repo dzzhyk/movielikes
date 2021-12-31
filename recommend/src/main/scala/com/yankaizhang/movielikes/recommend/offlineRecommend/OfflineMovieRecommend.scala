@@ -1,7 +1,7 @@
 package com.yankaizhang.movielikes.recommend.offlineRecommend
 
 import com.yankaizhang.movielikes.recommend.constant.OfflineConstants
-import com.yankaizhang.movielikes.recommend.entity.{Similarity, UserRecommendation}
+import com.yankaizhang.movielikes.recommend.entity.Similarity
 import org.apache.spark.sql.{DataFrame, SparkSession}
 import org.apache.spark.storage.StorageLevel
 
@@ -89,7 +89,7 @@ object OfflineMovieRecommend {
       .groupByKey()
       .map {
         case (userId, iterable) =>
-          (userId, iterable.toList.take(OfflineConstants.RECOMMEND_COUNT_PER).map(item => UserRecommendation(item)))
+          (userId, iterable.toList.take(OfflineConstants.RECOMMEND_COUNT_PER))
       }
       .toDF("userId", "recommendations")
 

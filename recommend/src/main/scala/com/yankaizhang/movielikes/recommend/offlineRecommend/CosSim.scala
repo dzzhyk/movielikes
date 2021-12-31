@@ -28,7 +28,7 @@ object CosSim {
       .option("uri", OfflineConstants.MONGO_DB_HOST + OfflineConstants.MOVIELENS_COLLECTION_NAME)
       .option("collection", "ratings")
       .load()
-      .drop("_id")
+      .drop("_id", "timestamp")
       .as[Rating]
       .map(entity => (entity.userId, entity.movieId, entity.rating))
       .toDF("userId", "movieId", "rating")
