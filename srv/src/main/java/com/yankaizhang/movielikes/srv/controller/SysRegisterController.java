@@ -5,6 +5,7 @@ import com.yankaizhang.movielikes.srv.interceptor.annotation.RepeatSubmit;
 import com.yankaizhang.movielikes.srv.security.RegisterBody;
 import com.yankaizhang.movielikes.srv.security.service.SysRegisterService;
 import com.yankaizhang.movielikes.srv.util.StringUtils;
+import io.swagger.annotations.Api;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -12,9 +13,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 /**
  * 注册验证
- * 
- * @author ruoyi
  */
+@Api("注册接口")
 @RestController
 public class SysRegisterController
 {

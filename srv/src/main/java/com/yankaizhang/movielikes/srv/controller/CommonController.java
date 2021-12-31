@@ -14,22 +14,4 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class CommonController {
 
-    @ApiOperation("主页")
-    @GetMapping({"/", "/index", "/home"})
-    public String index(){
-        return "index";
-    }
-
-    @ApiOperation("电影详情页")
-    @GetMapping({"/movie/{movieId}"})
-    public String detail(@PathVariable("movieId") Integer movieId){
-        return "detail";
-    }
-
-    @ApiOperation("个人收藏页")
-    @GetMapping("/collect")
-    public String collection(){
-        return "collect";
-    }
-
 }

@@ -13,6 +13,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
+/**
+ * @author dzzhyk
+ */
 @Api("电影推荐接口")
 @RequestMapping("/recommend")
 @RestController
@@ -25,21 +28,21 @@ public class RecommendController {
         this.dataService = dataService;
     }
 
-    @ApiOperation("获取热门电影榜单")
+    @ApiOperation("历史热门推荐")
     @GetMapping("/hot")
     public List<Movie> getHotMovies() {
         List<Recommendation> recommendations = dataService.getHotRecommendations(5);
         return dataService.getRecommendMovies(recommendations);
     }
 
-    @ApiOperation("评分最多电影榜单")
+    @ApiOperation("最新趋势推荐")
     @GetMapping("/rate")
     public List<Movie> getRateMoreMovies() {
         List<Recommendation> recommendations = dataService.getRateMoreRecommendations(5);
         return dataService.getRecommendMovies(recommendations);
     }
 
-    @ApiOperation("用户个性推荐榜单")
+    @ApiOperation("用户个性推荐")
     @GetMapping("/user/{uid}")
     public List<Movie> getUserRecommendMovies(@PathVariable("uid") Integer userId) {
         return dataService.getUserRecommend(userId);

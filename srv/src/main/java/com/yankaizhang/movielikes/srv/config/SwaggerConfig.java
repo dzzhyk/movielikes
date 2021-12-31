@@ -34,7 +34,7 @@ public class SwaggerConfig {
         return new ApiInfoBuilder()
                 .title("MovielikesApplication--接口文档")
                 .description("专业综合设计--电影推荐系统")
-                .version("1.0")
+                .version("0.0.1-SNAPSHOT")
                 .build();
     }
 }

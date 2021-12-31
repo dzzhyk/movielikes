@@ -153,7 +153,7 @@ getCode();
     justify-content: center;
     align-items: center;
     height: 100%;
-    background-image: url("../assets/images/2.jpg");
+    background-image: url("@/assets/images/2.jpg");
     background-size: cover;
     background-repeat: no-repeat;
     background-attachment: fixed;
