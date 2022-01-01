@@ -36,12 +36,11 @@ create table sys_movie
 (
     movie_id      bigint(20)  not null comment '电影ID',
     title varchar(255) not null comment '电影名称',
-#     title_chinese varchar(30) not null comment '中文电影名称',
     genres        varchar(255) default '' comment '电影分类',
-#     `release`     varchar(30) comment '上映时间',
-#     runtime       int comment '总时长(分钟)',
-#     overview      text comment '简介',
-#     poster_path   varchar(255) comment '海报uri',
+    `release`     varchar(20) comment '上映时间',
+    runtime       int comment '总时长(分钟)',
+    overview      text comment '简介',
+    poster_path   varchar(255) comment '海报uri',
     primary key (movie_id)
 ) engine = innodb
     comment = '电影表';

@@ -5,17 +5,14 @@
                 <el-col :xs="{ span: 14, offset: 0 }" :sm="{ span: 16, offset: 0 }" :md="{ span: 18, offset: 0 }">
                     <div style="color: white; font-size: 24px; padding-left: 12vw">Movielikes</div>
                 </el-col>
-                <el-col :xs="{ span: 10, offset: 0 }" :sm="{ span: 8 , offset: 0 }" :md="{ span: 6, offset: 0 }">
+                <el-col :xs="{ span: 10, offset: 0 }" :sm="{ span: 8, offset: 0 }" :md="{ span: 6, offset: 0 }">
                     <div style="padding-right: 10vw">
-                        <el-button
-                            v-if="userToken === undefined || userToken === ''"
-                            @click="login"
-                            style="float: right"
+                        <el-button v-if="userLogined === 'false'" @click="login" style="float: right"> 登录 </el-button>
+                        <div
+                            v-if="userLogined === 'true'"
+                            style="display: flex; flex-direction: row; align-items: center"
                         >
-                            登录
-                        </el-button>
-                        <div v-else style="display: flex; flex-direction: row; align-items: center;">
-                            <div style="color: white; padding-right: 1vw;">当前在线: {{ userName }}</div>
+                            <div style="color: white; padding-right: 1vw">当前在线: {{ userName }}</div>
                             <el-button @click="logout" style="float: right"> 登出 </el-button>
                         </div>
                     </div>
@@ -27,7 +24,7 @@
             <el-row>
                 <el-col :xs="{ span: 24, offset: 0 }" :sm="{ span: 20, offset: 2 }" :md="{ span: 18, offset: 3 }">
                     <div class="head-poster">
-                        <div style="font-size: 36px; color: white">欢迎！</div>
+                        <div style="font-size: 36px; color: white">欢迎！{{ userName }}</div>
                         <div style="font-size: 32px; color: white">在Movielikes，探索你的电影喜好并为其评分。</div>
                         <div class="search-bar">
                             <el-autocomplete placeholder="搜索感兴趣的电影名称、imdb编号、tmdb编号" @select="" />
@@ -37,7 +34,7 @@
             </el-row>
             <el-row>
                 <el-col :xs="{ span: 24, offset: 0 }" :sm="{ span: 20, offset: 2 }" :md="{ span: 18, offset: 3 }">
-                    <div v-if="userToken !== undefined && userToken !== ''">
+                    <div v-if="userLogined === 'true'">
                         <div class="movie-list-title">私人推荐</div>
                         <div class="movie-list-title-addon">每日新鲜电影推荐</div>
                         <el-divider :always="true"></el-divider>
@@ -74,7 +71,7 @@
             <el-row>
                 <el-col :xs="{ span: 24, offset: 0 }" :sm="{ span: 20, offset: 2 }" :md="{ span: 18, offset: 3 }">
                     <div>
-                        <div class="movie-list-title">最新趋势</div>
+                        <div class="movie-list-title">最新热评</div>
                         <div class="movie-list-title-addon">大家都在看</div>
                         <el-divider :always="true"></el-divider>
                         <div class="movie-list">
@@ -89,7 +86,7 @@
             </el-row>
             <el-row>
                 <el-col :xs="{ span: 24, offset: 0 }" :sm="{ span: 20, offset: 2 }" :md="{ span: 18, offset: 3 }">
-                    <div v-if="userToken !== undefined && userToken !== ''">
+                    <div v-if="userLogined === 'true'">
                         <div class="movie-list-title">个人收藏</div>
                         <div class="movie-list-title-addon">不忘旧时光</div>
                         <el-divider :always="true"></el-divider>
@@ -105,7 +102,7 @@
             </el-row>
             <el-row>
                 <el-col :xs="{ span: 24, offset: 0 }" :sm="{ span: 20, offset: 2 }" :md="{ span: 18, offset: 3 }">
-                    <div v-if="userToken !== undefined && userToken !== ''">
+                    <div v-if="userLogined === 'true'">
                         <div class="movie-list-title">继续为电影评分</div>
                         <div class="movie-list-title-addon">帮助 Movielikes 不断改进</div>
                         <el-divider :always="true"></el-divider>
@@ -122,7 +119,7 @@
             <el-backtop />
         </el-main>
         <el-footer>
-            <span v-if="userToken === undefined || userToken === ''" style="padding-bottom: 20px"
+            <span v-if="userLogined === 'false'" style="padding-bottom: 20px"
                 ><a href="javascript:void();" @click="login" style="color: powderblue">现在加入</a> Movielikes,
                 发现更多影视可能。</span
             >
@@ -134,23 +131,30 @@
 
 <script setup>
 import Movie from "@/components/Movie";
+import { useStore } from "vuex";
 import { useRouter } from "vue-router";
+import cache from "@/plugins/cache";
+import { ElMessageBox } from "element-plus";
 
 const store = useStore();
 const router = useRouter();
-const userToken = store.getters.token;
-const userName = store.getters.name;
+const userName = cache.session.get("name");
+const userLogined = cache.session.get("logined") || store.getters.logined;
 
 function login() {
     router.push("/login");
 }
 
 function logout() {
-    if (confirm("确定退出吗?")) {
+    ElMessageBox.confirm("确定退出吗?", "Warning", {
+        confirmButtonText: "OK",
+        cancelButtonText: "Cancel",
+        type: "warning",
+    }).then(() => {
         store.dispatch("LogOut").then(() => {
             window.location.href = "/index";
         });
-    }
+    });
 }
 </script>
 

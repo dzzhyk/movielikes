@@ -1,18 +1,27 @@
 import { login, logout, getInfo } from "@/api/login";
 import { getToken, setToken, removeToken } from "@/utils/auth";
+import cache from "@/plugins/cache"
+import { ElMessage } from "element-plus";
 
 const user = {
     state: {
+        logined: false,
         token: getToken(),
-        name: "",
+        name: null,
     },
 
     mutations: {
+        SET_LOGIN: (state, logined) => {
+            state.logined = logined;
+            cache.session.set("logined", logined)
+        },
         SET_TOKEN: (state, token) => {
             state.token = token;
+            cache.session.set("token", token)
         },
         SET_NAME: (state, name) => {
             state.name = name;
+            cache.session.set("name", name)
         },
     },
 
@@ -28,6 +37,11 @@ const user = {
                     .then((res) => {
                         setToken(res.token);
                         commit("SET_TOKEN", res.token);
+                        commit("SET_LOGIN", true);
+                        ElMessage({
+                            message: "登录成功",
+                            type: "success",
+                        });
                         resolve();
                     })
                     .catch((error) => {
@@ -57,8 +71,16 @@ const user = {
             return new Promise((resolve, reject) => {
                 logout()
                     .then(() => {
-                        commit("SET_TOKEN", "");
+                        cache.session.remove("token")
+                        cache.session.remove("name")
+                        commit("SET_TOKEN", null);
+                        commit("SET_NAME", null);
+                        commit("SET_LOGIN", false);
                         removeToken();
+                        ElMessage({
+                            message: "已登出",
+                            type: "success",
+                        });
                         resolve();
                     })
                     .catch((error) => {
