@@ -3,7 +3,7 @@
         <el-row>
             <el-col :xs="{ span: 24, offset: 0 }" :sm="{ span: 20, offset: 2 }" :md="{ span: 18, offset: 3 }">
                 <div class="head-poster">
-                    <div style="font-size: 30px; color: white">欢迎！{{ userName }}</div>
+                    <div style="font-size: 32px; color: white">欢迎！{{ userName }}</div>
                     <div style="font-size: 26px; color: white">在Movielikes，探索你的电影喜好并为其评分。</div>
                 </div>
             </el-col>
@@ -105,11 +105,17 @@
 <script setup>
 import Movie from "@/components/Movie";
 import { useStore } from "vuex";
+import { useRouter } from "vue-router";
 import cache from "@/plugins/cache";
 
 const store = useStore();
+const router = useRouter();
 const userName = cache.session.get("name");
-const userLogined = cache.session.get("logined") === 'true' || store.getters.logined === true;
+const userLogined = cache.session.get("logined") === "true" || store.getters.logined === true;
+
+function login() {
+    router.push("/login");
+}
 
 </script>
 
@@ -126,6 +132,8 @@ const userLogined = cache.session.get("logined") === 'true' || store.getters.log
     justify-content: space-evenly;
     align-items: flex-start;
     padding: 40px;
+    box-shadow: 0 1px 3px rgb(0 0 0 / 50%);
+    border-radius: 7px;
 }
 
 .movie-list {
@@ -149,7 +157,6 @@ const userLogined = cache.session.get("logined") === 'true' || store.getters.log
     color: gray;
     font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
 }
-
 
 .el-footer {
     display: flex;

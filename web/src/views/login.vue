@@ -55,8 +55,12 @@
 import { getCodeImg } from "@/api/login";
 
 const store = useStore();
+const route = useRoute();
 const router = useRouter();
 const { proxy } = getCurrentInstance();
+
+const { params, query } = route;
+const { target } = query;
 
 const loginForm = ref({
     username: "",
@@ -87,7 +91,11 @@ function handleLogin() {
                 .dispatch("Login", loginForm.value)
                 .then(() => {
                     store.dispatch("GetInfo").then(() => {
-                        router.push({ path: "/index" });
+                        if (target) {
+                            router.push({ path: target });
+                        } else {
+                            router.push({ path: "/index" });
+                        }
                     });
                 })
                 .catch(() => {

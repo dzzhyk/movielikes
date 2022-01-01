@@ -25,6 +25,7 @@ import { NavBar } from "@/layout/components";
     padding: 10px;
     text-align: left;
     align-items: center;
+    box-shadow: inset white 0px 0px 2px 1px;
 }
 
 .el-main {
@@ -35,7 +36,7 @@ import { NavBar } from "@/layout/components";
     background-position: left center;
     height: inherit;
     padding: 0;
-    padding-top: 2px;
+    padding-top: 15px;
 }
 
 </style>

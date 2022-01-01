@@ -623,6 +623,11 @@ normalize-wheel-es@^1.1.0:
   resolved "http://mirrors.tencent.com/npm/normalize-wheel-es/-/normalize-wheel-es-1.1.1.tgz#a8096db6a56f94332d884fd8ebeda88f2fc79569"
   integrity sha512-157VNH4CngrcsvF8xOVOe22cwniIR3nxSltdctvQeHZj8JttEeOXffK28jucWfWBXs0QNetAumjc1GiInnwX4w==
 
+nprogress@^0.2.0:
+  version "0.2.0"
+  resolved "https://mirrors.tencent.com/npm/nprogress/-/nprogress-0.2.0.tgz#cb8f34c53213d895723fcbab907e9422adbcafb1"
+  integrity sha1-y480xTIT2JVyP8urkH6UIq28r7E=
+
 path-parse@^1.0.6:
   version "1.0.7"
   resolved "http://mirrors.tencent.com/npm/path-parse/-/path-parse-1.0.7.tgz#fbc114b60ca42b30d9daf5858e4bd68bbedb6735"
