@@ -2,8 +2,8 @@
     <el-row>
         <el-col :xs="{ span: 24, offset: 0 }" :sm="{ span: 20, offset: 2 }" :md="{ span: 18, offset: 3 }">
             <div v-if="userLogined">
-                <div class="movie-list-title">个人收藏</div>
-                <div class="movie-list-title-addon">不忘旧时光</div>
+                <div class="movie-list-title">继续为电影评分</div>
+                <div class="movie-list-title-addon">帮助 Movielikes 不断改进</div>
                 <el-divider :always="true"></el-divider>
                 <div class="movie-list">
                     <div v-for="count in 10" :key="count">
@@ -15,17 +15,17 @@
             </div>
         </el-col>
     </el-row>
-    <el-footer>
-        <div style="padding-bottom: 20px; text-align: center">
-            <span v-if="!userLogined"
-                ><a href="javascript:void();" @click="router.push('/login')" style="color: powderblue">现在加入</a>
-                Movielikes, 发现更多影视可能。</span
-            >
-            <span v-else>你好, {{ userName }}! 在Movielikes, 发现更多影视可能。</span>
-            <br />
-            <span>Copyright © 2021 Movielikes All Rights Reserved.</span>
-        </div>
-    </el-footer>
+            <el-footer>
+            <div style="padding-bottom: 20px; text-align: center">
+                <span v-if="!userLogined"
+                    ><a href="javascript:void();" @click="router.push('/login');" style="color: powderblue">现在加入</a>
+                    Movielikes, 发现更多影视可能。</span
+                >
+                <span v-else>你好, {{ userName }}! 在Movielikes, 发现更多影视可能。</span>
+                <br />
+                <span>Copyright © 2021 Movielikes All Rights Reserved.</span>
+            </div>
+        </el-footer>
 </template>
 
 <script setup>
@@ -41,7 +41,6 @@ const userLogined = cache.session.get("logined") === "true" || store.getters.log
 </script>
 
 <style scoped>
-
 .movie-list {
     display: flex;
     flex-wrap: wrap;

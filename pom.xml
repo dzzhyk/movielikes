@@ -40,6 +40,7 @@
         <commons.io.version>2.11.0</commons.io.version>
         <commons.fileupload.version>1.4</commons.fileupload.version>
         <bitwalker.version>1.21</bitwalker.version>
+        <hutool.version>5.6.3</hutool.version>
     </properties>
 
     <repositories>

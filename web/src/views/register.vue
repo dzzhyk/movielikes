@@ -92,7 +92,7 @@ const registerRules = {
     ],
     password: [
         { required: true, trigger: "blur", message: "请输入您的密码" },
-        { min: 5, max: 20, message: "用户密码长度必须介于 5 和 20 之间", trigger: "blur" },
+        { min: 6, max: 20, message: "用户密码长度必须介于 6 和 20 之间", trigger: "blur" },
     ],
     confirmPassword: [
         { required: true, trigger: "blur", message: "请再次输入您的密码" },

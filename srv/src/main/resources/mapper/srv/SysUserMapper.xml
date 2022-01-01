@@ -84,4 +84,10 @@
         where user_id = #{userId}
     </update>
 
+    <update id="resetUserPwd" parameterType="com.yankaizhang.movielikes.srv.entity.SysUser">
+        update movielikes.sys_user
+        set password = #{password}
+        where user_name = #{userName}
+    </update>
+
 </mapper>

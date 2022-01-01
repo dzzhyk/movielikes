@@ -25,7 +25,6 @@ import { NavBar } from "@/layout/components";
     padding: 10px;
     text-align: left;
     align-items: center;
-    box-shadow: inset white 0px 0px 2px 1px;
 }
 
 .el-main {

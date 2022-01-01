@@ -3,8 +3,14 @@
         <el-row>
             <el-col :xs="{ span: 24, offset: 0 }" :sm="{ span: 20, offset: 2 }" :md="{ span: 18, offset: 3 }">
                 <div class="head-poster">
-                    <div style="font-size: 32px; color: white">欢迎！{{ userName }}</div>
-                    <div style="font-size: 26px; color: white">在Movielikes，探索你的电影喜好并为其评分。</div>
+                    <div v-if="!userLogined" style="font-size: 32px; color: white">
+                        欢迎!
+                        <a class="welcome-login-link" href="javascript:void(0);" @click="router.push('/login')"
+                            >点击登录</a
+                        >
+                    </div>
+                    <div v-if="userLogined" style="font-size: 32px; color: white">欢迎! {{ userName }}</div>
+                    <div style="font-size: 26px; color: white">在Movielikes, 探索你的电影喜好并为其评分。</div>
                 </div>
             </el-col>
         </el-row>
@@ -56,43 +62,11 @@
                 </div>
             </el-col>
         </el-row>
-        <el-row>
-            <el-col :xs="{ span: 24, offset: 0 }" :sm="{ span: 20, offset: 2 }" :md="{ span: 18, offset: 3 }">
-                <div v-if="userLogined">
-                    <div class="movie-list-title">个人收藏</div>
-                    <div class="movie-list-title-addon">不忘旧时光</div>
-                    <el-divider :always="true"></el-divider>
-                    <div class="movie-list">
-                        <div v-for="count in 10" :key="count">
-                            <movie movie-release-date="2021-12-30" movie-name="Forrest Gummp" movie-score="5.0">
-                                {{ count }}
-                            </movie>
-                        </div>
-                    </div>
-                </div>
-            </el-col>
-        </el-row>
-        <el-row>
-            <el-col :xs="{ span: 24, offset: 0 }" :sm="{ span: 20, offset: 2 }" :md="{ span: 18, offset: 3 }">
-                <div v-if="userLogined">
-                    <div class="movie-list-title">继续为电影评分</div>
-                    <div class="movie-list-title-addon">帮助 Movielikes 不断改进</div>
-                    <el-divider :always="true"></el-divider>
-                    <div class="movie-list">
-                        <div v-for="count in 10" :key="count">
-                            <movie movie-release-date="2021-12-30" movie-name="Forrest Gummp" movie-score="5.0">
-                                {{ count }}
-                            </movie>
-                        </div>
-                    </div>
-                </div>
-            </el-col>
-        </el-row>
         <el-footer>
             <div style="padding-bottom: 20px; text-align: center">
                 <span v-if="!userLogined"
-                    ><a href="javascript:void();" @click="login" style="color: powderblue">现在加入</a>
-                    Movielikes,发现更多影视可能。</span
+                    ><a href="javascript:void();" @click="router.push('/login')" style="color: powderblue">现在加入</a>
+                    Movielikes, 发现更多影视可能。</span
                 >
                 <span v-else>你好, {{ userName }}! 在Movielikes, 发现更多影视可能。</span>
                 <br />
@@ -112,11 +86,6 @@ const store = useStore();
 const router = useRouter();
 const userName = cache.session.get("name");
 const userLogined = cache.session.get("logined") === "true" || store.getters.logined === true;
-
-function login() {
-    router.push("/login");
-}
-
 </script>
 
 <style scoped>
@@ -134,6 +103,18 @@ function login() {
     padding: 40px;
     box-shadow: 0 1px 3px rgb(0 0 0 / 50%);
     border-radius: 7px;
+}
+
+.welcome-login-link {
+    cursor: pointer;
+    user-select: none;
+    text-decoration: none;
+    color: #50afde;
+}
+.welcome-login-link:focus,
+.welcome-login-link:hover {
+    color: #1c83b4;
+    text-decoration: none;
 }
 
 .movie-list {

@@ -2,6 +2,7 @@ package com.yankaizhang.movielikes.srv.mapper;
 
 import com.yankaizhang.movielikes.srv.entity.SysUser;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import org.apache.ibatis.annotations.Param;
 
 /**
  * <p>
@@ -45,4 +46,13 @@ public interface SysUserMapper extends BaseMapper<SysUser> {
      * @return 结果
      */
     int updateUser(SysUser user);
+
+    /**
+     * 重置用户密码
+     *
+     * @param userName 用户名
+     * @param password 密码
+     * @return 结果
+     */
+    int resetUserPwd(@Param("userName") String userName, @Param("password") String password);
 }

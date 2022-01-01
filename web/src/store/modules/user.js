@@ -8,6 +8,7 @@ const user = {
         logined: false,
         token: getToken(),
         name: null,
+        email: "",
     },
 
     mutations: {
@@ -22,6 +23,10 @@ const user = {
         SET_NAME: (state, name) => {
             state.name = name;
             cache.session.set("name", name)
+        },
+        SET_EMAIL: (state, email) => {
+            state.email = email;
+            cache.session.set("email", email)
         },
     },
 
@@ -57,6 +62,7 @@ const user = {
                     .then((res) => {
                         const user = res.user;
                         commit("SET_NAME", user.userName);
+                        commit("SET_EMAIL", user.email);
                         resolve(res);
                     })
                     .catch((error) => {
@@ -73,8 +79,10 @@ const user = {
                     .then(() => {
                         cache.session.remove("token")
                         cache.session.remove("name")
+                        cache.session.remove("email")
                         commit("SET_TOKEN", null);
                         commit("SET_NAME", null);
+                        commit("SET_EMAIL", "");
                         commit("SET_LOGIN", false);
                         removeToken();
                         ElMessage({

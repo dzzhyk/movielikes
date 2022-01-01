@@ -70,12 +70,6 @@
             <version>3.5.0</version>
         </dependency>
 
-        <!-- jackson -->
-<!--        <dependency>-->
-<!--            <groupId>com.fasterxml.jackson.core</groupId>-->
-<!--            <artifactId>jackson-databind</artifactId>-->
-<!--        </dependency>-->
-
         <!-- lombok -->
         <dependency>
             <groupId>org.projectlombok</groupId>
@@ -185,6 +179,13 @@
             <artifactId>UserAgentUtils</artifactId>
             <version>${bitwalker.version}</version>
         </dependency>
+
+        <dependency>
+            <groupId>cn.hutool</groupId>
+            <artifactId>hutool-all</artifactId>
+            <version>${hutool.version}</version>
+        </dependency>
+
     </dependencies>
 
     <build>

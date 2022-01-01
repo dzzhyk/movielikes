@@ -50,6 +50,11 @@ const constantRoutes = [
                 name: "Collection",
             },
             {
+                path: "/rating",
+                component: () => import("@/views/rating.vue"),
+                name: "Rating",
+            },
+            {
                 path: "/detail/:movieId",
                 component: () => import("@/views/detail.vue"),
                 name: "Detail",

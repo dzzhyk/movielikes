@@ -45,6 +45,7 @@ public class SysLoginController {
         AjaxResult ajax;
         try {
             user = SecurityUtils.getLoginUser().getUser();
+            user.setPassword(null);
             log.info("获取当前登录的用户: {}", user);
             ajax = AjaxResult.success();
             ajax.put("user", user);
