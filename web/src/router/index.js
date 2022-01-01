@@ -1,14 +1,18 @@
 import { createWebHistory, createRouter } from "vue-router";
+import Layout from "@/layout";
 
 // 公共路由
 const constantRoutes = [
     {
-        path: "/",
-        component: () => import("@/views/index.vue"),
-    },
-    {
-        path: "/index",
-        component: () => import("@/views/index.vue"),
+        path: "/redirect",
+        component: Layout,
+        hidden: true,
+        children: [
+            {
+                path: "/redirect/:path(.*)",
+                component: () => import("@/views/redirect/index.vue"),
+            },
+        ],
     },
     {
         path: "/login",
@@ -21,14 +25,37 @@ const constantRoutes = [
         hidden: true,
     },
     {
-        path: "/redirect/:path(.*)",
-        component: () => import("@/views/redirect/index.vue"),
-    },
-    {
         path: "/:pathMatch(.*)*",
         component: () => import("@/views/error/404.vue"),
         hidden: true,
     },
+    {
+        path: "",
+        component: Layout,
+        redirect: "/index",
+        children: [
+            {
+                path: "/index",
+                component: () => import("@/views/index.vue"),
+                name: "Index",
+            },
+            {
+                path: "/profile",
+                component: () => import("@/views/profile.vue"),
+                name: "Profile",
+            },
+            {
+                path: "/collection",
+                component: () => import("@/views/collection.vue"),
+                name: "Collection",
+            },
+            {
+                path: "/detail/:movieId",
+                component: () => import("@/views/detail.vue"),
+                name: "Detail",
+            },
+        ],
+    }
 ];
 
 const router = createRouter({
