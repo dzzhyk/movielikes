@@ -209,7 +209,7 @@ function logout() {
 .movie-list {
     display: flex;
     flex-wrap: wrap;
-    justify-content: center;
+    justify-content: flex-start;
     align-items: center;
     gap: 15px;
 }
