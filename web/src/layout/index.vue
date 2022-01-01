@@ -5,15 +5,12 @@
         </el-header>
         <el-main>
             <router-view />
-        <el-footer>
-            <FootBar></FootBar>
-        </el-footer>
         </el-main>
     </el-container>
 </template>
 
 <script setup>
-import { NavBar, FootBar } from "@/layout/components";
+import { NavBar } from "@/layout/components";
 </script>
 
 <style scoped>
@@ -41,14 +38,4 @@ import { NavBar, FootBar } from "@/layout/components";
     padding-top: 2px;
 }
 
-.el-footer {
-    display: flex;
-    flex-direction: column;
-    height: 100px;
-    color: white;
-    background-color: #0d243f;
-    justify-content: flex-end;
-    align-items: center;
-    margin-top: 50px;
-}
 </style>

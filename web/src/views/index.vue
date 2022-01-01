@@ -3,17 +3,14 @@
         <el-row>
             <el-col :xs="{ span: 24, offset: 0 }" :sm="{ span: 20, offset: 2 }" :md="{ span: 18, offset: 3 }">
                 <div class="head-poster">
-                    <div style="font-size: 36px; color: white">欢迎！{{ userName }}</div>
-                    <div style="font-size: 32px; color: white">在Movielikes，探索你的电影喜好并为其评分。</div>
-                    <div class="search-bar">
-                        <el-autocomplete placeholder="搜索感兴趣的电影名称、imdb编号、tmdb编号" @select="" />
-                    </div>
+                    <div style="font-size: 30px; color: white">欢迎！{{ userName }}</div>
+                    <div style="font-size: 26px; color: white">在Movielikes，探索你的电影喜好并为其评分。</div>
                 </div>
             </el-col>
         </el-row>
         <el-row>
             <el-col :xs="{ span: 24, offset: 0 }" :sm="{ span: 20, offset: 2 }" :md="{ span: 18, offset: 3 }">
-                <div v-if="userLogined === 'true'">
+                <div v-if="userLogined">
                     <div class="movie-list-title">私人推荐</div>
                     <div class="movie-list-title-addon">每日新鲜电影推荐</div>
                     <el-divider :always="true"></el-divider>
@@ -61,7 +58,7 @@
         </el-row>
         <el-row>
             <el-col :xs="{ span: 24, offset: 0 }" :sm="{ span: 20, offset: 2 }" :md="{ span: 18, offset: 3 }">
-                <div v-if="userLogined === 'true'">
+                <div v-if="userLogined">
                     <div class="movie-list-title">个人收藏</div>
                     <div class="movie-list-title-addon">不忘旧时光</div>
                     <el-divider :always="true"></el-divider>
@@ -77,7 +74,7 @@
         </el-row>
         <el-row>
             <el-col :xs="{ span: 24, offset: 0 }" :sm="{ span: 20, offset: 2 }" :md="{ span: 18, offset: 3 }">
-                <div v-if="userLogined === 'true'">
+                <div v-if="userLogined">
                     <div class="movie-list-title">继续为电影评分</div>
                     <div class="movie-list-title-addon">帮助 Movielikes 不断改进</div>
                     <el-divider :always="true"></el-divider>
@@ -91,7 +88,17 @@
                 </div>
             </el-col>
         </el-row>
-        <el-backtop />
+        <el-footer>
+            <div style="padding-bottom: 20px; text-align: center">
+                <span v-if="!userLogined"
+                    ><a href="javascript:void();" @click="login" style="color: powderblue">现在加入</a>
+                    Movielikes,发现更多影视可能。</span
+                >
+                <span v-else>你好, {{ userName }}! 在Movielikes, 发现更多影视可能。</span>
+                <br />
+                <span>Copyright © 2021 Movielikes All Rights Reserved.</span>
+            </div>
+        </el-footer>
     </div>
 </template>
 
@@ -102,14 +109,14 @@ import cache from "@/plugins/cache";
 
 const store = useStore();
 const userName = cache.session.get("name");
-const userLogined = cache.session.get("logined") || store.getters.logined;
+const userLogined = cache.session.get("logined") === 'true' || store.getters.logined === true;
 
 </script>
 
 <style scoped>
 .head-poster {
     background-image: url("@/assets/images/1.jpg");
-    height: 240px;
+    height: 180px;
     text-align: left;
     background-size: cover;
     background-repeat: no-repeat;
@@ -119,15 +126,6 @@ const userLogined = cache.session.get("logined") || store.getters.logined;
     justify-content: space-evenly;
     align-items: flex-start;
     padding: 40px;
-}
-
-.search-bar {
-    width: -webkit-fill-available;
-    width: -moz-available;
-}
-
-.search-bar .el-autocomplete {
-    width: inherit;
 }
 
 .movie-list {
@@ -150,5 +148,17 @@ const userLogined = cache.session.get("logined") || store.getters.logined;
     font-size: 16px;
     color: gray;
     font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+}
+
+
+.el-footer {
+    display: flex;
+    flex-direction: column;
+    height: 100px;
+    color: white;
+    background-color: #0d243f;
+    justify-content: flex-end;
+    align-items: center;
+    margin-top: 50px;
 }
 </style>

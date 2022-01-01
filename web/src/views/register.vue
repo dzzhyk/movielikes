@@ -191,6 +191,7 @@ getCode();
     width: 33%;
     height: 38px;
     float: right;
+    text-align: center;
     img {
         cursor: pointer;
         vertical-align: middle;
