@@ -30,7 +30,7 @@
                             {{ this.release }}
                         </p>
                     </div>
-                    <div style="float: right; padding-right: 10px; font-size: 16px">{{ this.avgRating }}</div>
+                    <div style="float: right; padding-right: 10px; font-size: 16px;color: #ff9900">{{ this.avgRating }}</div>
                 </div>
             </div>
             <!-- <el-skeleton style="width: 240px; height: 360px" :loading="loading" animated>
@@ -101,7 +101,7 @@ export default {
 .card {
     width: 240px;
     box-shadow: 0 1px 3px rgb(0 0 0 / 50%);
-    background-color: white;
+    background-color: #ffffff;
 }
 
 .card:hover {
@@ -139,4 +139,5 @@ a:active,
 a:hover {
     outline: 0;
 }
+
 </style>
