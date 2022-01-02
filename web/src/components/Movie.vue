@@ -12,7 +12,7 @@
             </a>
             <div style="margin: 3px">
                 <div class="poster-title">
-                    <a href="/index" target="_self">
+                    <a href="/index" target="_self" class="title">
                         <span>{{ this.movieName }}</span>
                     </a>
                 </div>
@@ -48,6 +48,10 @@ export default {
 
 .card:hover {
     box-shadow: 0 2px 18px rgb(0 0 0 / 50%);
+}
+
+.title:hover {
+    color: green;
 }
 
 .poster {
