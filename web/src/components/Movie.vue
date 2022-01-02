@@ -22,7 +22,7 @@
                             {{ this.movieReleaseDate }}
                         </p>
                     </div>
-                    <div style="float: right; padding-right: 10px; font-size: 16px">{{ this.movieScore }}</div>
+                    <div style="float: right; padding-right: 10px; font-size: 16px;color: #ff9900">{{ this.movieScore }}</div>
                 </div>
             </div>
         </div>
@@ -44,7 +44,6 @@ export default {
 .card {
     width: 240px;
     box-shadow: 0 1px 3px rgb(0 0 0 / 50%);
-    background-color: white;
 }
 
 .card:hover {
