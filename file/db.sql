@@ -34,13 +34,15 @@ values (283229, 'admin', 'ry@163.com', '$2a$10$7JB720yubVSZvUI0rEqK/.VqGOZTH.ulu
 drop table if exists sys_movie;
 create table sys_movie
 (
-    movie_id      bigint(20)  not null comment '电影ID',
-    title varchar(255) not null comment '电影名称',
-    genres        varchar(255) default '' comment '电影分类',
-    `release`     varchar(20) comment '上映时间',
-    runtime       int comment '总时长(分钟)',
-    overview      text comment '简介',
-    poster_path   varchar(255) comment '海报uri',
+    movie_id    bigint(20)   not null comment '电影ID',
+    title       varchar(255) not null comment '电影名称',
+    genres      varchar(255) default '' comment '电影分类',
+    imdb_id     varchar(20) comment 'imdb ID',
+    tmdb_id     varchar(20) comment 'tmdb ID',
+    `release`   varchar(20) comment '上映时间',
+    runtime     int comment '总时长(分钟)',
+    overview    text comment '简介',
+    poster_path varchar(255) comment '海报uri',
     primary key (movie_id)
 ) engine = innodb
     comment = '电影表';
