@@ -28,3 +28,11 @@ export function updateUserPwd(newPassword) {
         params: data,
     });
 }
+
+// 获取用户收藏
+export function getUserCollection() {
+    return request({
+        url: "/user/collection",
+        method: "get"
+    });
+}

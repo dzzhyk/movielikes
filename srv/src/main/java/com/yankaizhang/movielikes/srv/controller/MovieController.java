@@ -34,9 +34,7 @@ public class MovieController {
     @ApiOperation("分页获取电影")
     @GetMapping("/list")
     public AjaxResult getMovieListPage(@RequestParam(value = "curr", required = false, defaultValue = "1") Integer page,
-                                       @RequestParam(value = "size", required = false, defaultValue = "20") Integer size
-    ) {
-        log.info("{}, {}", page, size);
+                                       @RequestParam(value = "size", required = false, defaultValue = "20") Integer size) {
         return AjaxResult.success(sysMovieService.getMovieListPage(page, size));
     }
 

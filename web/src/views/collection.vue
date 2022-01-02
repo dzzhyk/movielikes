@@ -6,42 +6,61 @@
                 <div class="movie-list-title-addon">不忘旧时光</div>
                 <el-divider :always="true"></el-divider>
                 <div class="movie-list">
-                    <div v-for="count in 10" :key="count">
-                        <movie movie-release-date="2021-12-30" movie-name="Forrest Gummp" movie-score="5.0">
-                            {{ count }}
-                        </movie>
+                    <div v-for="m in records">
+                        <movie
+                            :movieId="m.movieId"
+                            :title="m.title"
+                            :release="m.release"
+                            :posterPath="m.posterPath"
+                            :avgRating="m.avgRating"
+                        ></movie>
+                    </div>
+                    <div v-if="records.length === 0">
+                        还没有收藏哦~ <a href="/rating">点击</a>前往浏览所有电影，或者搜索🔍 电影添加收藏。
                     </div>
                 </div>
             </div>
         </el-col>
     </el-row>
-    <el-footer>
-        <div style="padding-bottom: 20px; text-align: center">
-            <span v-if="!userLogined"
-                ><a href="javascript:void();" @click="router.push('/login')" style="color: powderblue">现在加入</a>
-                Movielikes, 发现更多影视可能。</span
-            >
-            <span v-else>你好, {{ userName }}! 在Movielikes, 发现更多影视可能。</span>
-            <br />
-            <span>Copyright © 2021 Movielikes All Rights Reserved.</span>
-        </div>
-    </el-footer>
+    <el-row>
+        <el-col :span="24">
+            <div style="margin-top: 30px"></div>
+        </el-col>
+    </el-row>
 </template>
 
-<script setup>
+<script>
 import Movie from "@/components/Movie";
-import { useStore } from "vuex";
-import { useRouter } from "vue-router";
 import cache from "@/plugins/cache";
+import { getUserCollection } from "@/api/user";
 
-const store = useStore();
-const router = useRouter();
-const userName = cache.session.get("name");
-const userLogined = cache.session.get("logined") === "true" || store.getters.logined === true;
+export default {
+    data() {
+        return {
+            userName: "",
+            userLogined: false,
+            records: [],
+        };
+    },
+    components: {
+        Movie,
+    },
+    mounted() {
+        this.userName = cache.session.get("name") || "";
+        this.userLogined = cache.session.get("logined") === "true" || this.$store.getters.logined === true;
+        this.loadUserCollection()
+    },
+    methods: {
+        loadUserCollection() {
+            getUserCollection().then((resp) => {
+                this.records = resp.data;
+            });
+        },
+    },
+};
 </script>
 
 <style scoped>
-
 .movie-list {
     display: flex;
     flex-wrap: wrap;

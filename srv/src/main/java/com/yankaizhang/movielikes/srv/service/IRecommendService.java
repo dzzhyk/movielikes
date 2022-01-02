@@ -4,6 +4,7 @@ import com.yankaizhang.movielikes.srv.entity.SysMovie;
 import com.yankaizhang.movielikes.srv.entity.vo.MovieVO;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * 推荐服务接口
@@ -31,4 +32,9 @@ public interface IRecommendService {
      */
     List<MovieVO> getUserRecommend(Long userId);
 
+    /**
+     * 加载平均rating
+     * @return 平均ratings
+     */
+    Map<String, String> getAvgRatings();
 }

@@ -114,7 +114,8 @@ public class RecommendServiceImpl implements IRecommendService {
         return res;
     }
 
-    private Map<String, String> getAvgRatings(){
+    @Override
+    public Map<String, String> getAvgRatings(){
         DecimalFormat decimalFormat = new DecimalFormat("#.00");
         Map<String, String> avgRatings = redisCache.getCacheMap(RedisConstants.MOVIE_AVG_RATINGS);
         if (StringUtils.isNull(avgRatings) || StringUtils.isEmpty(avgRatings)) {

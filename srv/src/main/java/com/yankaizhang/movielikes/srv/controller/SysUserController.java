@@ -3,22 +3,30 @@ package com.yankaizhang.movielikes.srv.controller;
 import cn.hutool.core.util.ReUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.yankaizhang.movielikes.srv.api.AjaxResult;
+import com.yankaizhang.movielikes.srv.entity.SysMovie;
 import com.yankaizhang.movielikes.srv.entity.SysUser;
 import com.yankaizhang.movielikes.srv.entity.SysUserMovie;
+import com.yankaizhang.movielikes.srv.entity.vo.MovieVO;
 import com.yankaizhang.movielikes.srv.entity.vo.UserVO;
+import com.yankaizhang.movielikes.srv.mapper.SysMovieMapper;
 import com.yankaizhang.movielikes.srv.mapper.SysUserMapper;
 import com.yankaizhang.movielikes.srv.mapper.SysUserMovieMapper;
 import com.yankaizhang.movielikes.srv.security.LoginUser;
 import com.yankaizhang.movielikes.srv.security.service.TokenService;
+import com.yankaizhang.movielikes.srv.service.IRecommendService;
+import com.yankaizhang.movielikes.srv.service.ISysMovieService;
 import com.yankaizhang.movielikes.srv.util.SecurityUtils;
 import com.yankaizhang.movielikes.srv.util.StringUtils;
+import io.netty.util.internal.StringUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
@@ -41,6 +49,12 @@ public class SysUserController {
     @Autowired
     private TokenService tokenService;
 
+    @Autowired
+    private SysMovieMapper sysMovieMapper;
+
+    @Autowired
+    private IRecommendService recommendService;
+
     @ApiOperation("获取用户收藏")
     @GetMapping("/collection")
     public AjaxResult getUserCollection() {
@@ -48,8 +62,21 @@ public class SysUserController {
         Long userId = user.getUserId();
         List<SysUserMovie> userCollections
                 = userMovieMapper.selectList(new QueryWrapper<SysUserMovie>().eq("user_id", userId));
-        List<Long> list = userCollections.stream().map(SysUserMovie::getMovieId).collect(Collectors.toList());
-        return AjaxResult.success(list);
+        List<Long> movieIdList = userCollections.stream().map(SysUserMovie::getMovieId).collect(Collectors.toList());
+
+        if(movieIdList.size() <= 0) {
+            return AjaxResult.success(new ArrayList<>());
+        }
+        List<SysMovie> tmp = sysMovieMapper.selectBatchIds(movieIdList);
+        Map<String, String> avgRatings = recommendService.getAvgRatings();
+
+        List<MovieVO> res = new ArrayList<>(movieIdList.size());
+
+        for (SysMovie sysMovie : tmp) {
+            res.add(new MovieVO(sysMovie, avgRatings.get(sysMovie.getMovieId().toString())));
+        }
+
+        return AjaxResult.success(res);
     }
 
     @ApiOperation("更新用户资料")

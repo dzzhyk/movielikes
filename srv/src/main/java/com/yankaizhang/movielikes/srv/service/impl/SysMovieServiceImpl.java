@@ -14,6 +14,7 @@ import com.yankaizhang.movielikes.srv.entity.SysMovie;
 import com.yankaizhang.movielikes.srv.entity.vo.MovieVO;
 import com.yankaizhang.movielikes.srv.mapper.SysMovieMapper;
 import com.yankaizhang.movielikes.srv.redis.RedisCache;
+import com.yankaizhang.movielikes.srv.service.IRecommendService;
 import com.yankaizhang.movielikes.srv.service.ISysMovieService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.yankaizhang.movielikes.srv.util.StringUtils;
@@ -50,6 +51,9 @@ public class SysMovieServiceImpl extends ServiceImpl<SysMovieMapper, SysMovie> i
     @Autowired
     private RedisCache redisCache;
 
+    @Autowired
+    private IRecommendService recommendService;
+
     @Override
     public Map<String, Object> getMovieDetails(Long movieId) {
         Map<String, Object> res = redisCache.getCacheMap(RedisConstants.MOVIE_DETAIL_PREFIX + movieId);
@@ -83,10 +87,18 @@ public class SysMovieServiceImpl extends ServiceImpl<SysMovieMapper, SysMovie> i
         Page<SysMovie> page = new Page<>(pn, size);
         IPage<SysMovie> moviePage = movieMapper.selectPage(page, new QueryWrapper<>());
         HashMap<String, Object> res = new HashMap<>();
+        Map<String, String> avgRatings = recommendService.getAvgRatings();
+
+        List<MovieVO> movieVOList = new ArrayList<>();
+        List<SysMovie> tmp = moviePage.getRecords();
+        for (SysMovie sysMovie : tmp) {
+            movieVOList.add(new MovieVO(sysMovie, avgRatings.get(sysMovie.getMovieId().toString())));
+        }
+
         res.put("pages", moviePage.getPages());
         res.put("curr", moviePage.getCurrent());
         res.put("total", moviePage.getTotal());
-        res.put("records", moviePage.getRecords());
+        res.put("records", movieVOList);
         res.put("size", moviePage.getSize());
         return res;
     }
