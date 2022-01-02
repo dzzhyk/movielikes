@@ -52,13 +52,17 @@
                     type="warning"
                     >取消收藏</el-button
                 >
-                <el-rate
-                    style="margin-top: 10px"
-                    v-model="this.userScore"
-                    :text-color="'#F7BA2A'"
-                    show-score
-                    allow-half
-                ></el-rate>
+                <div style="margin-top: 20px">
+                    <div style="display: inline-block">我的打分:</div>
+                    <el-rate
+                        style="margin-top: 10px; display: inline-block; margin-left: 10px"
+                        v-model="this.userRating"
+                        :text-color="'#F7BA2A'"
+                        @change="handleRating"
+                        show-score
+                        allow-half
+                    ></el-rate>
+                </div>
             </div>
         </div>
     </div>
@@ -67,6 +71,7 @@
 <script>
 import { Picture as IconPicture } from "@element-plus/icons-vue";
 import { checkIfUserCollection, addUserCollection, deleteUserCollection } from "@/api/user";
+import { updateUserRating, checkUserRating } from "../api/movie";
 import { ElMessage } from "element-plus";
 
 export default {
@@ -85,23 +90,29 @@ export default {
     },
     data() {
         return {
-            userScore: 0,
             movieId: -1,
             alreadyCollect: false,
             loading: false,
+            userRating: 0,
         };
     },
     mounted() {
         let { params, query } = this.$route;
         let { movieId } = params;
         this.movieId = movieId;
-        this.checkCollection();
+        this.loadCollection();
+        this.loadUserRating();
     },
     components: { IconPicture },
     methods: {
-        checkCollection() {
+        loadCollection() {
             checkIfUserCollection(this.movieId).then((resp) => {
                 this.alreadyCollect = resp.data !== null;
+            });
+        },
+        loadUserRating() {
+            checkUserRating(this.movieId).then((resp) => {
+                this.userRating = resp.data;
             });
         },
         handleCollect() {
@@ -109,7 +120,7 @@ export default {
             addUserCollection(this.movieId)
                 .then((resp) => {
                     this.loading = false;
-                    this.checkCollection();
+                    this.loadCollection();
                     ElMessage({
                         message: "收藏成功",
                         type: "success",
@@ -124,14 +135,14 @@ export default {
                         duration: 600,
                     });
                 });
-            this.checkCollection();
+            this.loadCollection();
         },
         handleCancelCollect() {
             this.loading = true;
             deleteUserCollection(this.movieId)
                 .then((resp) => {
                     this.loading = false;
-                    this.checkCollection();
+                    this.loadCollection();
                     ElMessage({
                         message: "取消收藏成功",
                         type: "success",
@@ -144,6 +155,28 @@ export default {
                         message: "取消收藏失败",
                         type: "error",
                         duration: 600,
+                    });
+                });
+        },
+        handleRating() {
+            updateUserRating(this.movieId, this.userRating)
+                .then((resp) => {
+                    if (resp.code === 200) {
+                        ElMessage({
+                            message: "打分成功!",
+                            type: "success",
+                        });
+                    } else {
+                        ElMessage({
+                            message: "打分失败!",
+                            type: "error",
+                        });
+                    }
+                })
+                .catch((error) => {
+                    ElMessage({
+                        message: error,
+                        type: "error",
                     });
                 });
         },
