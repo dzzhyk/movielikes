@@ -112,7 +112,6 @@ export default {
     mounted() {
         this.userName = cache.session.get("name") || "";
         this.userLogined = cache.session.get("logined") === "true" || this.$store.getters.logined === true;
-        console.log(this.userName, this.userLogined);
         this.loadMost();
         this.loadRank();
         this.loadUserRecommend();

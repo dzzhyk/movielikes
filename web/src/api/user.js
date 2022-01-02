@@ -1,4 +1,4 @@
-import request from '@/utils/request'
+import request from "@/utils/request";
 
 // 查询用户个人信息
 export function getUserProfile() {
@@ -33,6 +33,30 @@ export function updateUserPwd(newPassword) {
 export function getUserCollection() {
     return request({
         url: "/user/collection",
-        method: "get"
+        method: "get",
+    });
+}
+
+// 检查用户收藏
+export function checkIfUserCollection(movieId) {
+    return request({
+        url: "/user/checkCollection/" + movieId,
+        method: "get",
+    });
+}
+
+// 添加用户收藏
+export function addUserCollection(movieId) {
+    return request({
+        url: "/user/collection/" + movieId,
+        method: "post",
+    });
+}
+
+// 删除用户收藏
+export function deleteUserCollection(movieId) {
+    return request({
+        url: "/user/collection/" + movieId,
+        method: "delete",
     });
 }

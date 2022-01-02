@@ -6,7 +6,7 @@
                     <el-image
                         @load="noloading()"
                         lazy
-                        :src="this.posterPath === '' ? '' : 'https://image.tmdb.org/t/p/w400/' + this.posterPath"
+                        :src="this.posterPath === '' ? '' : 'http://image.tmdb.org/t/p/w400' + this.posterPath"
                         class="poster"
                         alt="poster"
                     >

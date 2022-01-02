@@ -27,13 +27,13 @@ public class SysUserMovie implements Serializable {
     /**
      * 用户ID
      */
-    @TableId(value = "user_id", type = IdType.AUTO)
+//    @TableId(value = "user_id", type = IdType.AUTO)
     private Long userId;
 
     /**
      * 电影ID
      */
-    @TableId(value = "movie_id", type = IdType.AUTO)
+//    @TableId(value = "movie_id", type = IdType.AUTO)
     private Long movieId;
 
 

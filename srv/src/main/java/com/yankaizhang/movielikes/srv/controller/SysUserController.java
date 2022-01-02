@@ -138,7 +138,7 @@ public class SysUserController {
     }
 
     @ApiOperation("删除用户收藏")
-    @DeleteMapping("/collection")
+    @DeleteMapping("/collection/{mid}")
     public AjaxResult deleteUserCollection(@PathVariable("mid") Long movieId) {
         SysUser user = SecurityUtils.getLoginUser().getUser();
         Long userId = user.getUserId();
@@ -146,4 +146,12 @@ public class SysUserController {
         return AjaxResult.success(delete);
     }
 
+    @ApiOperation("检查用户是否有某个收藏")
+    @GetMapping("/checkCollection/{mid}")
+    public AjaxResult checkUserCollection(@PathVariable("mid") Long movieId){
+        SysUser user = SecurityUtils.getLoginUser().getUser();
+        Long userId = user.getUserId();
+        SysUserMovie one = userMovieMapper.selectOne(new QueryWrapper<SysUserMovie>().eq("user_id", userId).eq("movie_id", movieId));
+        return AjaxResult.success(one);
+    }
 }

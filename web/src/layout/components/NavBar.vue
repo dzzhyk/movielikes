@@ -20,7 +20,7 @@
                         justify-content: flex-end;
                         align-items: center;
                         gap: 20px;
-                        padding-right: 20px;
+                        padding-right: 30px;
                     "
                 >
                     <div>
@@ -35,7 +35,7 @@
                         <span style="color: white">{{ userName }}</span>
                     </div>
                     <div>
-                        <el-dropdown>
+                        <el-dropdown :placement="'bottom'">
                             <el-icon :size="30" class="user-icon"><avatar /></el-icon>
                             <template #dropdown>
                                 <el-dropdown-menu>

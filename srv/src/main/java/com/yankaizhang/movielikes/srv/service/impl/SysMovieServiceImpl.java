@@ -67,6 +67,11 @@ public class SysMovieServiceImpl extends ServiceImpl<SysMovieMapper, SysMovie> i
         }
         res.put("movie", sysMovie);
 
+        // 获取平均rating
+        Map<String, String> avgRatings = recommendService.getAvgRatings();
+        String avgRating = avgRatings.get(sysMovie.getMovieId().toString());
+        res.put("avgRating", avgRating);
+
         // 获取10个相似电影
         MongoCollection<Document> simMatrix
                 = mongoClient.getDatabase(MongoConstants.MONGODB_DATABASE).getCollection(MongoConstants.MONGODB_ITEMCF_SIM_MATRIX_COLLECTION);
@@ -76,7 +81,12 @@ public class SysMovieServiceImpl extends ServiceImpl<SysMovieMapper, SysMovie> i
             simMovieIds.add(document.getInteger("movieId2"));
         }
         List<SysMovie> simMovies = movieMapper.selectBatchIds(simMovieIds);
-        res.put("simMovies", simMovies);
+        List<MovieVO> simMovieVOList = new ArrayList<>();
+        for (SysMovie simMovie : simMovies) {
+            simMovieVOList.add(new MovieVO(simMovie, avgRatings.get(simMovie.getMovieId().toString())));
+        }
+
+        res.put("simMovies", simMovieVOList);
         redisCache.setCacheMap(RedisConstants.MOVIE_DETAIL_PREFIX + movieId, res);
         redisCache.expire(RedisConstants.MOVIE_DETAIL_PREFIX + movieId, 12, TimeUnit.HOURS);
         return res;
