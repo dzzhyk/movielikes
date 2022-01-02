@@ -8,7 +8,6 @@ import springfox.documentation.oas.annotations.EnableOpenApi;
 
 @EnableOpenApi
 @SpringBootApplication
-@MapperScan("com.yankaizhang.movielikes.srv.mapper")
 public class MovielikesApplication {
 
     public static void main(String[] args) {

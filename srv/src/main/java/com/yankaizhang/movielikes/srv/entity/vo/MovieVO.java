@@ -18,13 +18,15 @@ public class MovieVO implements Serializable {
     public MovieVO(SysMovie sysMovie, String avgRating){
         this.movieId = sysMovie.getMovieId();
         this.title = sysMovie.getTitle();
-        this.release = "2000-04-28";
+        this.release = sysMovie.getRelease();
+        this.posterPath = sysMovie.getPosterPath();
         this.avgRating = avgRating;
     }
 
     private Long movieId;
     private String title;
     private String release;
+    private String posterPath;
     private String avgRating;
 
 }

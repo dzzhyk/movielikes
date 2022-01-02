@@ -2,18 +2,14 @@ package com.yankaizhang.movielikes.srv.controller;
 
 import cn.hutool.core.util.ReUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.yankaizhang.movielikes.srv.api.AjaxResult;
 import com.yankaizhang.movielikes.srv.entity.SysUser;
 import com.yankaizhang.movielikes.srv.entity.SysUserMovie;
 import com.yankaizhang.movielikes.srv.entity.vo.UserVO;
-import com.yankaizhang.movielikes.srv.exception.ServiceException;
 import com.yankaizhang.movielikes.srv.mapper.SysUserMapper;
 import com.yankaizhang.movielikes.srv.mapper.SysUserMovieMapper;
 import com.yankaizhang.movielikes.srv.security.LoginUser;
 import com.yankaizhang.movielikes.srv.security.service.TokenService;
-import com.yankaizhang.movielikes.srv.service.ISysUserMovieService;
-import com.yankaizhang.movielikes.srv.service.ISysUserService;
 import com.yankaizhang.movielikes.srv.util.SecurityUtils;
 import com.yankaizhang.movielikes.srv.util.StringUtils;
 import io.swagger.annotations.Api;

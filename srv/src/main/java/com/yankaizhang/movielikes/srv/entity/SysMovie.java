@@ -1,6 +1,7 @@
 package com.yankaizhang.movielikes.srv.entity;
 
 import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import java.io.Serializable;
@@ -31,15 +32,9 @@ public class SysMovie implements Serializable {
     private Long movieId;
 
     /**
-     * 英文电影名称
+     * 电影名称
      */
-//    private String titleEnglish;
     private String title;
-
-    /**
-     * 中文电影名称
-     */
-//    private String titleChinese;
 
     /**
      * 电影分类
@@ -47,24 +42,35 @@ public class SysMovie implements Serializable {
     private String genres;
 
     /**
-//     * 上映时间
-//     */
-//    private String release;
-//
-//    /**
-//     * 总时长(分钟)
-//     */
-//    private Integer runtime;
-//
-//    /**
-//     * 简介
-//     */
-//    private String overview;
-//
-//    /**
-//     * 海报uri
-//     */
-//    private String posterPath;
+     * IMDB ID
+     */
+    private String imdbId;
+
+    /**
+     * TMDB ID
+     */
+    private String tmdbId;
+
+    /**
+     * 上映时间
+     */
+    @TableField("`release`")
+    private String release;
+
+    /**
+     * 总时长(分钟)
+     */
+    private Integer runtime;
+
+    /**
+     * 简介
+     */
+    private String overview;
+
+    /**
+     * 海报uri
+     */
+    private String posterPath;
 
 
 }

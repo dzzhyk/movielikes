@@ -5,7 +5,7 @@
                 <div class="head-poster">
                     <div v-if="!userLogined" style="font-size: 32px; color: white">
                         欢迎!
-                        <a class="welcome-login-link" href="javascript:void(0);" @click="router.push('/login')"
+                        <a class="welcome-login-link" href="javascript:void(0);" @click="this.$router.push('/login')"
                             >点击登录</a
                         >
                     </div>
@@ -21,11 +21,16 @@
                     <div class="movie-list-title-addon">每日新鲜电影推荐</div>
                     <el-divider :always="true"></el-divider>
                     <div class="movie-list">
-                        <div v-for="count in 10" :key="count">
-                            <movie movie-release-date="2021-12-30" movie-name="Forrest Gummp" movie-score="5.0">
-                                {{ count }}
-                            </movie>
+                        <div v-for="m in data_user">
+                            <movie
+                                :movieId="m.movieId"
+                                :title="m.title"
+                                :release="m.release"
+                                :posterPath="m.posterPath"
+                                :avgRating="m.avgRating"
+                            ></movie>
                         </div>
+                        <div v-if="!data_user">Hi~ 尚未有你喜欢的推荐结果，请为电影评分以解锁私人推荐~</div>
                     </div>
                 </div>
             </el-col>
@@ -37,10 +42,14 @@
                     <div class="movie-list-title-addon">经典的、最好的</div>
                     <el-divider :always="true"></el-divider>
                     <div class="movie-list">
-                        <div v-for="count in 10" :key="count">
-                            <movie movie-release-date="2021-12-30" movie-name="Forrest Gummp Forrest" movie-score="5.0">
-                                {{ count }}
-                            </movie>
+                        <div v-for="m in data_most">
+                            <movie
+                                :movieId="m.movieId"
+                                :title="m.title"
+                                :release="m.release"
+                                :posterPath="m.posterPath"
+                                :avgRating="m.avgRating"
+                            ></movie>
                         </div>
                     </div>
                 </div>
@@ -53,10 +62,14 @@
                     <div class="movie-list-title-addon">大家都在看</div>
                     <el-divider :always="true"></el-divider>
                     <div class="movie-list">
-                        <div v-for="count in 10" :key="count">
-                            <movie movie-release-date="2021-12-30" movie-name="Forrest Gummp" movie-score="5.0">
-                                {{ count }}
-                            </movie>
+                        <div v-for="m in data_rank">
+                            <movie
+                                :movieId="m.movieId"
+                                :title="m.title"
+                                :release="m.release"
+                                :posterPath="m.posterPath"
+                                :avgRating="m.avgRating"
+                            ></movie>
                         </div>
                     </div>
                 </div>
@@ -65,7 +78,9 @@
         <el-footer>
             <div style="padding-bottom: 20px; text-align: center">
                 <span v-if="!userLogined"
-                    ><a href="javascript:void();" @click="router.push('/login')" style="color: powderblue">现在加入</a>
+                    ><a href="javascript:void();" @click="this.$router.push('/login')" style="color: powderblue"
+                        >现在加入</a
+                    >
                     Movielikes, 发现更多影视可能。</span
                 >
                 <span v-else>你好, {{ userName }}! 在Movielikes, 发现更多影视可能。</span>
@@ -76,16 +91,58 @@
     </div>
 </template>
 
-<script setup>
+<script>
 import Movie from "@/components/Movie";
-import { useStore } from "vuex";
-import { useRouter } from "vue-router";
 import cache from "@/plugins/cache";
+import { getMost, getRank, getUserRecommend } from "@/api/recommend";
 
-const store = useStore();
-const router = useRouter();
-const userName = cache.session.get("name");
-const userLogined = cache.session.get("logined") === "true" || store.getters.logined === true;
+export default {
+    data() {
+        return {
+            userName: "",
+            userLogined: false,
+            data_user: [],
+            data_most: [],
+            data_rank: [],
+        };
+    },
+    components: {
+        Movie,
+    },
+    mounted() {
+        this.userName = cache.session.get("name") || "";
+        this.userLogined = cache.session.get("logined") === "true" || this.$store.getters.logined === true;
+        console.log(this.userName, this.userLogined);
+        this.loadMost();
+        this.loadRank();
+        this.loadUserRecommend();
+    },
+    methods: {
+        loadMost() {
+            getMost()
+                .then((resp) => {
+                    this.data_most = resp.data[0];
+                })
+                .catch((err) => {});
+        },
+        loadRank() {
+            getRank()
+                .then((resp) => {
+                    this.data_rank = resp.data[0];
+                })
+                .catch((err) => {});
+        },
+        loadUserRecommend() {
+            if (this.userLogined) {
+                getUserRecommend()
+                    .then((resp) => {
+                        this.data_user = resp.data[0];
+                    })
+                    .catch((err) => {});
+            }
+        },
+    },
+};
 </script>
 
 <style scoped>

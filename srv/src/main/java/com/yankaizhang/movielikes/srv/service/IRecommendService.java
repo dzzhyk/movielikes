@@ -16,13 +16,13 @@ public interface IRecommendService {
      * 获取历史热门推荐
      * @return 电影列表
      */
-    List<SysMovie> getMostRated();
+    List<MovieVO> getMostRated();
 
     /**
      * 获取近期热门推荐
      * @return 电影列表
      */
-    List<SysMovie> getMostRatedRecently();
+    List<MovieVO> getMostRatedRecently();
 
     /**
      * 获取用户个人推荐

@@ -180,6 +180,7 @@
             <version>${bitwalker.version}</version>
         </dependency>
 
+        <!-- Hutool -->
         <dependency>
             <groupId>cn.hutool</groupId>
             <artifactId>hutool-all</artifactId>

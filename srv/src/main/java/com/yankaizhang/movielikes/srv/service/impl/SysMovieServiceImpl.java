@@ -1,5 +1,8 @@
 package com.yankaizhang.movielikes.srv.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoCollection;
@@ -8,11 +11,13 @@ import com.mongodb.client.model.Sorts;
 import com.yankaizhang.movielikes.srv.constant.MongoConstants;
 import com.yankaizhang.movielikes.srv.constant.RedisConstants;
 import com.yankaizhang.movielikes.srv.entity.SysMovie;
+import com.yankaizhang.movielikes.srv.entity.vo.MovieVO;
 import com.yankaizhang.movielikes.srv.mapper.SysMovieMapper;
 import com.yankaizhang.movielikes.srv.redis.RedisCache;
 import com.yankaizhang.movielikes.srv.service.ISysMovieService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.yankaizhang.movielikes.srv.util.StringUtils;
+import lombok.extern.slf4j.Slf4j;
 import org.bson.BsonDocument;
 import org.bson.Document;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,6 +37,7 @@ import java.util.concurrent.TimeUnit;
  * @author dzzhyk
  * @since 2021-12-28
  */
+@Slf4j
 @Service
 public class SysMovieServiceImpl extends ServiceImpl<SysMovieMapper, SysMovie> implements ISysMovieService {
 
@@ -71,4 +77,19 @@ public class SysMovieServiceImpl extends ServiceImpl<SysMovieMapper, SysMovie> i
         redisCache.expire(RedisConstants.MOVIE_DETAIL_PREFIX + movieId, 12, TimeUnit.HOURS);
         return res;
     }
+
+    @Override
+    public Map<String, Object> getMovieListPage(Integer pn, Integer size) {
+        Page<SysMovie> page = new Page<>(pn, size);
+        IPage<SysMovie> moviePage = movieMapper.selectPage(page, new QueryWrapper<>());
+        HashMap<String, Object> res = new HashMap<>();
+        res.put("pages", moviePage.getPages());
+        res.put("curr", moviePage.getCurrent());
+        res.put("total", moviePage.getTotal());
+        res.put("records", moviePage.getRecords());
+        res.put("size", moviePage.getSize());
+        return res;
+    }
+
+
 }

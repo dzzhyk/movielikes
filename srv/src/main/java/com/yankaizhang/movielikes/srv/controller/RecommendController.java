@@ -1,8 +1,10 @@
 package com.yankaizhang.movielikes.srv.controller;
 
 import com.yankaizhang.movielikes.srv.api.AjaxResult;
+import com.yankaizhang.movielikes.srv.entity.SysUser;
 import com.yankaizhang.movielikes.srv.entity.vo.MovieVO;
 import com.yankaizhang.movielikes.srv.service.IRecommendService;
+import com.yankaizhang.movielikes.srv.util.SecurityUtils;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,8 +40,10 @@ public class RecommendController {
 
 
     @ApiOperation("用户个性推荐")
-    @GetMapping("/user/{uid}")
-    public AjaxResult getUserRecommend(@PathVariable("uid") Long userId) {
+    @GetMapping("/user")
+    public AjaxResult getUserRecommend() {
+        SysUser user = SecurityUtils.getLoginUser().getUser();
+        Long userId = user.getUserId();
         List<MovieVO> userRecommend = recommendService.getUserRecommend(userId);
         return AjaxResult.success(userRecommend);
     }

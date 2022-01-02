@@ -6,38 +6,66 @@
                 <div class="movie-list-title-addon">帮助 Movielikes 不断改进</div>
                 <el-divider :always="true"></el-divider>
                 <div class="movie-list">
-                    <div v-for="count in 10" :key="count">
-                        <movie movie-release-date="2021-12-30" movie-name="Forrest Gummp" movie-score="5.0">
-                            {{ count }}
-                        </movie>
+                    <div v-for="m in records">
+                        <movie
+                            :movieId="m.movieId"
+                            :title="m.title"
+                            :release="m.release"
+                            :posterPath="m.posterPath"
+                            :avgRating="m.avgRating"
+                        ></movie>
                     </div>
                 </div>
             </div>
         </el-col>
     </el-row>
-            <el-footer>
-            <div style="padding-bottom: 20px; text-align: center">
-                <span v-if="!userLogined"
-                    ><a href="javascript:void();" @click="router.push('/login');" style="color: powderblue">现在加入</a>
-                    Movielikes, 发现更多影视可能。</span
-                >
-                <span v-else>你好, {{ userName }}! 在Movielikes, 发现更多影视可能。</span>
-                <br />
-                <span>Copyright © 2021 Movielikes All Rights Reserved.</span>
+    <el-row>
+        <el-col :span="16" :offset="8">
+            <div style="margin-top: 30px; margin-bottom: 30px">
+                <el-pagination @current-change="handleCurrentChange" background layout="prev, pager, next, jumper" :page-count="this.pages"></el-pagination>
             </div>
-        </el-footer>
+        </el-col>
+    </el-row>
 </template>
 
-<script setup>
+<script>
 import Movie from "@/components/Movie";
-import { useStore } from "vuex";
-import { useRouter } from "vue-router";
 import cache from "@/plugins/cache";
+import { getMovieList } from "@/api/movie";
 
-const store = useStore();
-const router = useRouter();
-const userName = cache.session.get("name");
-const userLogined = cache.session.get("logined") === "true" || store.getters.logined === true;
+export default {
+    data() {
+        return {
+            userName: "",
+            userLogined: false,
+            records: [],
+            curr: 1,
+            size: 20,
+            pages: 1
+        };
+    },
+    components: {
+        Movie,
+    },
+    mounted() {
+        this.userName = cache.session.get("name") || "";
+        this.userLogined = cache.session.get("logined") === "true" || this.$store.getters.logined === true;
+        this.loadMovieList(this.curr, this.size);
+    },
+    methods: {
+        loadMovieList(curr, size) {
+            getMovieList(curr, size).then((resp) => {
+                this.pages = resp.data.pages;
+                this.curr = resp.data.curr;
+                this.size = resp.data.size;
+                this.records = resp.data.records;
+            });
+        },
+        handleCurrentChange(val){
+            this.loadMovieList(val, this.size)
+        }
+    },
+};
 </script>
 
 <style scoped>
@@ -61,16 +89,5 @@ const userLogined = cache.session.get("logined") === "true" || store.getters.log
     font-size: 16px;
     color: gray;
     font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-}
-
-.el-footer {
-    display: flex;
-    flex-direction: column;
-    height: 100px;
-    color: white;
-    background-color: #0d243f;
-    justify-content: flex-end;
-    align-items: center;
-    margin-top: 50px;
 }
 </style>

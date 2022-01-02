@@ -45,8 +45,8 @@ public class RecommendServiceImpl implements IRecommendService {
 
 
     @Override
-    public List<SysMovie> getMostRated() {
-        List<SysMovie> res = redisCache.getCacheList(RedisConstants.MOST_RATED_MOVIES);
+    public List<MovieVO> getMostRated() {
+        List<MovieVO> res = redisCache.getCacheList(RedisConstants.MOST_RATED_MOVIES);
         if (StringUtils.isNotNull(res) && StringUtils.isNotEmpty(res)) {
             log.info("getMostRated 缓存命中");
             return res;
@@ -54,15 +54,21 @@ public class RecommendServiceImpl implements IRecommendService {
         MongoCollection<Document> rateMoreMoviesCollection =
                 mongoClient.getDatabase(MongoConstants.MONGODB_DATABASE).getCollection(MongoConstants.MONGODB_RATE_MORE_MOVIES_COLLECTION);
         FindIterable<Document> documents = rateMoreMoviesCollection.find().sort(Sorts.descending("count")).limit(10);
-        res = getMovieListFromDb(documents);
+
+        List<SysMovie> tmp = getMovieListFromDb(documents);
+        Map<String, String> avgRatings = getAvgRatings();
+        for (SysMovie sysMovie : tmp) {
+            res.add(new MovieVO(sysMovie, avgRatings.get(sysMovie.getMovieId().toString())));
+        }
+
         redisCache.setCacheList(RedisConstants.MOST_RATED_MOVIES, res);
         redisCache.expire(RedisConstants.MOST_RATED_MOVIES, 12, TimeUnit.HOURS);
         return res;
     }
 
     @Override
-    public List<SysMovie> getMostRatedRecently() {
-        List<SysMovie> res = redisCache.getCacheList(RedisConstants.RECENT_MOST_RATED_MOVIES);
+    public List<MovieVO> getMostRatedRecently() {
+        List<MovieVO> res = redisCache.getCacheList(RedisConstants.RECENT_MOST_RATED_MOVIES);
         if (StringUtils.isNotNull(res) && StringUtils.isNotEmpty(res)) {
             log.info("getMostRatedRecently 缓存命中");
             return res;
@@ -70,7 +76,13 @@ public class RecommendServiceImpl implements IRecommendService {
         MongoCollection<Document> rateMoreMoviesRecentlyCollection = mongoClient.getDatabase(MongoConstants.MONGODB_DATABASE)
                 .getCollection(MongoConstants.MONGODB_RATE_MORE_MOVIES_RECENTLY_COLLECTION);
         FindIterable<Document> documents = rateMoreMoviesRecentlyCollection.find().sort(Sorts.descending("yearmonth")).limit(10);
-        res = getMovieListFromDb(documents);
+
+        List<SysMovie> tmp = getMovieListFromDb(documents);
+        Map<String, String> avgRatings = getAvgRatings();
+        for (SysMovie sysMovie : tmp) {
+            res.add(new MovieVO(sysMovie, avgRatings.get(sysMovie.getMovieId().toString())));
+        }
+
         redisCache.setCacheList(RedisConstants.RECENT_MOST_RATED_MOVIES, res);
         redisCache.expire(RedisConstants.RECENT_MOST_RATED_MOVIES, 12, TimeUnit.HOURS);
         return res;
@@ -85,10 +97,24 @@ public class RecommendServiceImpl implements IRecommendService {
         }
         Document userDocument = mongoClient.getDatabase(MongoConstants.MONGODB_DATABASE).getCollection(MongoConstants.MONGODB_ITEMCF_RESULT_BIG)
                 .find(Filters.eq("userId", userId)).first();
-        if (StringUtils.isNotNull(userDocument) && userDocument.isEmpty()) {
+        if (StringUtils.isNull(userDocument) || userDocument.isEmpty()) {
             return new ArrayList<>();
         }
 
+        Map<String, String> avgRatings = getAvgRatings();
+
+        List<Long> recommendations = userDocument.get("recommendations", List.class);
+
+        List<SysMovie> tmp = movieMapper.selectBatchIds(recommendations);
+        for (SysMovie sysMovie : tmp) {
+            res.add(new MovieVO(sysMovie, avgRatings.get(sysMovie.getMovieId().toString())));
+        }
+        redisCache.setCacheList(RedisConstants.USER_RECOMMEND_PREFIX + userId, res);
+        redisCache.expire(RedisConstants.USER_RECOMMEND_PREFIX + userId, 12, TimeUnit.HOURS);
+        return res;
+    }
+
+    private Map<String, String> getAvgRatings(){
         DecimalFormat decimalFormat = new DecimalFormat("#.00");
         Map<String, String> avgRatings = redisCache.getCacheMap(RedisConstants.MOVIE_AVG_RATINGS);
         if (StringUtils.isNull(avgRatings) || StringUtils.isEmpty(avgRatings)) {
@@ -105,17 +131,8 @@ public class RecommendServiceImpl implements IRecommendService {
         } else {
             log.info("命中avgRating缓存");
         }
-
-        List<Long> recommendations = userDocument.get("recommendations", List.class);
-        List<SysMovie> tmp = movieMapper.selectBatchIds(recommendations);
-        for (SysMovie sysMovie : tmp) {
-            res.add(new MovieVO(sysMovie, avgRatings.get(sysMovie.getMovieId().toString())));
-        }
-        redisCache.setCacheList(RedisConstants.USER_RECOMMEND_PREFIX + userId, res);
-        redisCache.expire(RedisConstants.USER_RECOMMEND_PREFIX + userId, 12, TimeUnit.HOURS);
-        return res;
+        return avgRatings;
     }
-
 
     private List<SysMovie> getMovieListFromDb(FindIterable<Document> documents) {
         List<SysMovie> res;
