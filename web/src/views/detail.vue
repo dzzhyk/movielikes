@@ -103,10 +103,6 @@ export default {
                     console.log(this.movie_info);
                 })
                 .catch((err) => {
-                    ElMessage({
-                        message: "加载电影详情失败!",
-                        type: "error",
-                    });
                 });
         },
     },
