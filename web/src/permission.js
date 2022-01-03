@@ -1,19 +1,14 @@
 import router from "@/router";
-import NProgress from "nprogress";
 import "nprogress/nprogress.css";
-import { getToken } from "@/utils/auth";
+import {getToken} from "@/utils/auth";
 
-NProgress.configure({ showSpinner: false });
-
-const whiteList = ["/login", "/index", "/register"];
+const whiteList = ["/login", "/index", "/register", "/"];
 
 // 路由守卫
 router.beforeEach((to, from, next) => {
-    NProgress.start();
     if (getToken()) {
         if (to.path === "/login") {
-            next({ path: "/" });
-            NProgress.done();
+            next({path: "/index"});
         } else {
             next();
         }
@@ -24,11 +19,10 @@ router.beforeEach((to, from, next) => {
             next();
         } else {
             next(`/login?target=${to.fullPath}`); // 否则全部重定向到登录页
-            NProgress.done();
         }
     }
 });
 
 router.afterEach(() => {
-    NProgress.done();
+
 });

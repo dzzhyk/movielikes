@@ -31,7 +31,7 @@
             <el-form-item style="width: 100%">
                 <el-button
                     :loading="loading"
-                    size="medium"
+                    size="default"
                     type="primary"
                     style="width: 100%"
                     @click.prevent="handleLogin"

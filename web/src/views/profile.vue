@@ -65,7 +65,6 @@
 
 <script setup>
 import { useStore } from "vuex";
-import { useRouter } from "vue-router";
 import cache from "@/plugins/cache";
 import { validEmail } from "@/utils/validate";
 import { updateUserProfile, updateUserPwd } from "@/api/user";
@@ -91,11 +90,11 @@ const testEmail = (rule, value, callback) => {
 
 const updateProfileRules = {
     username: [
-        { required: true, trigger: "blur", message: "请输入用户名", trigger: "blur" },
+        { required: true, message: "请输入用户名", trigger: "blur" },
         { required: true, min: 2, max: 20, message: "用户账号长度必须介于 2 和 20 之间", trigger: "blur" },
     ],
     email: [
-        { required: true, trigger: "blur", message: "请输入邮箱", trigger: "blur" },
+        { required: true, message: "请输入邮箱", trigger: "blur" },
         { required: true, validator: testEmail, trigger: "blur" },
     ],
 };

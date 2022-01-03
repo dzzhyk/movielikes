@@ -78,7 +78,7 @@
         <el-footer>
             <div style="padding-bottom: 20px; text-align: center">
                 <span v-if="!userLogined"
-                    ><a href="javascript:void();" @click="this.$router.push('/login')" style="color: powderblue"
+                    ><a href="javascript:void(0);" @click="this.$router.push('/login')" style="color: powderblue"
                         >现在加入</a
                     >
                     Movielikes, 发现更多影视可能。</span
@@ -114,7 +114,9 @@ export default {
         this.userLogined = cache.session.get("logined") === "true" || this.$store.getters.logined === true;
         this.loadMost();
         this.loadRank();
-        this.loadUserRecommend();
+        if (this.userLogined) {
+            this.loadUserRecommend();
+        }
     },
     methods: {
         loadMost() {
@@ -132,13 +134,11 @@ export default {
                 .catch((err) => {});
         },
         loadUserRecommend() {
-            if (this.userLogined) {
-                getUserRecommend()
-                    .then((resp) => {
-                        this.data_user = resp.data[0];
-                    })
-                    .catch((err) => {});
-            }
+          getUserRecommend()
+              .then((resp) => {
+                this.data_user = resp.data[0];
+              })
+              .catch((err) => {});
         },
     },
 };

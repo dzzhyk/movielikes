@@ -1,4 +1,4 @@
-import { createWebHistory, createRouter } from "vue-router";
+import {createWebHistory, createRouter} from "vue-router";
 import Layout from "@/layout";
 
 // 公共路由
@@ -70,7 +70,7 @@ const router = createRouter({
         if (savedPosition) {
             return savedPosition;
         } else {
-            return { top: 0 };
+            return {top: 0};
         }
     },
 });

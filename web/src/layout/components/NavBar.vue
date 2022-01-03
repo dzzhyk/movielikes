@@ -23,14 +23,6 @@
                         padding-right: 30px;
                     "
                 >
-                    <div>
-                        <el-autocomplete
-                            :popper-append-to-body="false"
-                            :trigger-on-focus="false"
-                            placeholder="搜索电影名称"
-                            @select=""
-                        />
-                    </div>
                     <div v-if="userLogined">
                         <span style="color: white">{{ userName }}</span>
                     </div>

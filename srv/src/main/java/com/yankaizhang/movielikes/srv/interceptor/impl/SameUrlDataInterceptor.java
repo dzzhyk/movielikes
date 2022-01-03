@@ -27,9 +27,9 @@ import java.util.concurrent.TimeUnit;
 @Component
 public class SameUrlDataInterceptor extends RepeatSubmitInterceptor
 {
-    public final String REPEAT_PARAMS = "repeatParams";
+    private final String REPEAT_PARAMS = "repeatParams";
 
-    public final String REPEAT_TIME = "repeatTime";
+    private final String REPEAT_TIME = "repeatTime";
 
     // 令牌自定义标识
     @Value("${token.header}")
