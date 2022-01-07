@@ -8,6 +8,8 @@ export default defineConfig(({ mode, command }) => {
   return {
     plugins: createVitePlugins(env, command === 'build'),
     resolve: {
+      // 生产环境下，更换为"/"
+      base: "./",
       // https://cn.vitejs.dev/config/#resolve-alias
       alias: {
         // 设置路径

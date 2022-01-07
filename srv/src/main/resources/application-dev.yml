@@ -1,3 +1,9 @@
+# 开发环境配置
+server:
+  port: 8080
+  error:
+    include-exception: true
+    include-message: always
 spring:
   messages:
     basename: i18n/messages
@@ -41,10 +47,6 @@ mybatis-plus:
   configuration:
     map-underscore-to-camel-case: true
 
-server:
-  error:
-    include-exception: true
-    include-message: always
 
 # token配置
 token:

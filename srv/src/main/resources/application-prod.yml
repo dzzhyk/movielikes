@@ -1,0 +1,69 @@
+# 生产环境配置
+server:
+  port: 8080
+  servlet:
+    context-path: /prod-api
+  error:
+    include-exception: true
+    include-message: always
+spring:
+  messages:
+    basename: i18n/messages
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 20MB
+  datasource:
+    username: root
+    password: 1102m6514
+    url: jdbc:mysql://127.0.0.1:3306/movielikes?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=true&serverTimezone=GMT%2B8
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    type: com.alibaba.druid.pool.DruidDataSource
+  data:
+    mongodb:
+      host: 127.0.0.1
+      port: 27017
+  thymeleaf:
+    mode: HTML
+    encoding: utf-8
+    cache: false
+  devtools:
+    restart:
+      enabled: true
+  redis:
+    host: localhost
+    port: 6379
+    database: 0
+    password:
+    timeout: 10s
+    lettuce:
+      pool:
+        min-idle: 0
+        max-idle: 8
+        max-active: 8
+        max-wait: -1ms
+
+mybatis-plus:
+  mapper-locations: classpath*:mapper/**/*Mapper.xml
+  type-aliases-package: com.yankaizhang.movielikes.**.entity
+  configuration:
+    map-underscore-to-camel-case: true
+
+
+# token配置
+token:
+  header: Movielikes-Token
+  secret: abcdefghijklmnopqrstuvwxyzmovielikes
+  expireTime: 30
+
+# 防止XSS攻击
+xss:
+  # 过滤开关
+  enabled: false
+  # 排除链接（多个用逗号分隔）
+  excludes:
+  # 匹配链接
+  urlPatterns:
+
+movielikes:
+  captchaType: char

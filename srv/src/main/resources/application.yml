@@ -1,9 +1,6 @@
-server:
-  port: 8080
-
-
 spring:
   application:
     name: movielikes-srv
+  # 配置文件选择
   profiles:
     active: dev
